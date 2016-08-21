@@ -1,11 +1,10 @@
-# vfile-find-up [![Build Status](https://img.shields.io/travis/wooorm/vfile-find-up.svg)](https://travis-ci.org/wooorm/vfile-find-up) [![Coverage Status](https://img.shields.io/codecov/c/github/wooorm/vfile-find-up.svg)](https://codecov.io/github/wooorm/vfile-find-up)
+# vfile-find-up [![Build Status][travis-badge]][travis] [![Coverage Status][codecov-badge]][codecov]
 
-Find one or more files (exposed as [VFile](https://github.com/wooorm/vfile)s)
-by searching the file system upwards.
+Find [vfile][]s by searching the file system upwards.
 
 ## Installation
 
-[npm](https://docs.npmjs.com/cli/install):
+[npm][npm-install]:
 
 ```bash
 npm install vfile-find-up
@@ -13,7 +12,7 @@ npm install vfile-find-up
 
 ## Usage
 
-Require dependencies:
+Dependencies:
 
 ```js
 var findUp = require('vfile-find-up');
@@ -24,197 +23,94 @@ upwards:
 
 ```js
 findUp.all('package.json', console.log);
-/* null [ VFile {
- *     contents: '',
- *     messages: [],
- *     history: [ '/Users/foo/bar/baz/package.json' ],
- *     directory: '/Users/foo/bar/baz',
- *     filename: 'package',
- *     extension: 'json' },
- *   VFile {
- *     contents: '',
- *     messages: [],
- *     history: [ '/Users/foo/package.json' ],
- *     directory: '/Users/foo',
- *     filename: 'package',
- *     extension: 'json' } ]
- */
+```
+
+Logs:
+
+```js
+null [ VFile {
+    data: {},
+    messages: [],
+    history: [ '/Users/tilde/projects/oss/vfile-find-up/package.json' ],
+    cwd: '/Users/tilde/projects/oss/vfile-find-up' } ]
 ```
 
 Search for the first file:
 
 ```js
 findUp.one('package.json', console.log);
-/* null VFile {
- *   contents: '',
- *   messages: [],
- *   history: [ '/Users/foo/bar/baz/package.json' ],
- *   directory: '/Users/foo/bar/baz',
- *   filename: 'package',
- *   extension: 'json' }
- */
 ```
 
-### findUp.one(test\[, directory\], [callback](#function-callbackerr-file))
-
-Find a file or a directory upwards.
-
-**Example**
+Logs:
 
 ```js
-findUp.one('package.json', console.log);
-/* null VFile {
- *   contents: '',
- *   messages: [],
- *   history: [ '/Users/foo/bar/baz/package.json' ],
- *   directory: '/Users/foo/bar/baz',
- *   filename: 'package',
- *   extension: 'json' }
- */
+null VFile {
+  data: {},
+  messages: [],
+  history: [ '/Users/tilde/projects/oss/vfile-find-up/package.json' ],
+  cwd: '/Users/tilde/projects/oss/vfile-find-up' }
 ```
 
-**Signatures**
+## API
 
-*   `findUp.one(filePath[, directory], callback)`;
-*   `findUp.one(extension[, directory], callback)`;
-*   `findUp.one(test[, directory], callback)`;
-*   `findUp.one(tests[, directory], callback)`.
+### `vfileFindUp.all(tests[, path], callback)`
 
-**Parameters**
+Search for `tests` upwards.  Invokes callback with either an error
+or an array of files passing `tests`.
+Note: Virtual Files are not read (their `contents` is not populated).
 
-*   `filePath` (`string`)
-    — Filename (including extension) to search for;
+###### Parameters
 
-*   `extension` (`string`)
-    — File extension to search for (must start with a `.`);
+*   `tests` (`string|Function|Array.<tests>`)
+    — A test is a [function invoked with a `vfile`][test].
+    If an array is passed in, any test must match a given file for it
+    to be included.
+    If a `string` is passed in, the `basename` or `extname` of files
+    must match it for them to be included.
+*   `path` (`string`, default: `process.cwd()`)
+    — Place to searching from;
+*   `callback` (`function cb(err[, files])`);
+    — Function invoked with all matching files.
 
-*   `test` ([`Function`](#function-testfile))
-    — Function invoked to check whether a virtual file should be included;
+### `vfileFindUp.one(tests[, path], callback)`
 
-*   `tests` (`Array.<Function|filePath|extension>`)
-    — List of tests, any of which should match a given file for it to
-    be included.
+Like `vfileFindUp.all`, but invokes `callback` with the first found
+file, or `null`.
 
-*   `directory` (`string`, optional, default: `process.cwd()`)
-    — Place to start searching from;
+### `function test(file)`
 
-*   `callback` ([`Function`](#function-callbackerr-file));
-    — Function invoked when a matching file or the top of the volume
-    is reached.
+Check whether a virtual file should be included.  Invoked with a
+[vfile][].
 
-**Notes**
+###### Returns
 
-*   Virtual Files are not read (their `content` is not populated).
+*   `true` or `vfileFindUp.INCLUDE` — Include the file in the results;
+*   `vfileFindUp.BREAK` — Stop searching for files;
+*   anything else is ignored: the file is not included.
 
-#### function callback(err, file)
-
-Invoked when a matching file or the top of the volume is reached.
-
-**Parameters**
-
-*   `err` (`Error`, optional);
-*   `file` ([`VFile`](https://github.com/wooorm/vfile), optional).
-
-**Notes**
-
-*   The `err` parameter is never populated.
-
-### findUp.all(test\[, directory\], [callback](#function-callbackerr-files))
-
-Find files or directories upwards.
-
-**Example**
-
-```js
-findUp.all('package.json', console.log);
-/* null [ VFile {
- *     contents: '',
- *     messages: [],
- *     history: [ '/Users/foo/bar/baz/package.json' ],
- *     directory: '/Users/foo/bar/baz',
- *     filename: 'package',
- *     extension: 'json' },
- *   VFile {
- *     contents: '',
- *     messages: [],
- *     history: [ '/Users/foo/package.json' ],
- *     directory: '/Users/foo',
- *     filename: 'package',
- *     extension: 'json' } ]
- */
-```
-
-**Signatures**
-
-*   `findUp.all(filePath[, directory], callback)`;
-*   `findUp.all(extension[, directory], callback)`;
-*   `findUp.all(test[, directory], callback)`;
-*   `findUp.all(tests[, directory], callback)`.
-
-**Parameters**
-
-*   `filePath` (`string`)
-    — Filename (including extension) to search for;
-
-*   `extension` (`string`)
-    — File extension to search for (must start with a `.`);
-
-*   `test` ([`Function`](#function-testfile))
-    — Function invoked to check whether a virtual file should be included;
-
-*   `tests` (`Array.<Function|filePath|extension>`)
-    — List of tests, any of which should match a given file for it to
-    be included.
-
-*   `directory` (`string`, optional, default: `process.cwd()`)
-    — Place to start searching from;
-
-*   `callback` ([`Function`](#function-callbackerr-files));
-    — Function invoked when matching files or the top of the volume
-    is reached.
-
-**Notes**
-
-*   Virtual Files are not read (their `content` is not populated).
-
-#### function callback(err, files)
-
-Invoked when files or the top of the volume is reached.
-
-**Parameters**
-
-*   `err` (`Error`, optional);
-*   `files` ([`Array.<VFile>`](https://github.com/wooorm/vfile), optional).
-
-**Notes**
-
-*   The `err` parameter is never populated.
-
-### function test(file)
-
-Check whether a virtual file should be included.
-
-**Parameters**
-
-*   `file` ([`VFile`](https://github.com/wooorm/vfile)).
-
-**Returns**:
-
-*   `boolean` — When truthy, the file is included;
-
-*   `number` — Bitmask ([`findUp.INCLUDE`](#findupinclude) and
-    [`findUp.EXIT`](#findupexit)) to control searching behavior.
-
-### findUp.INCLUDE
-
-Flag used as an alternative to returning `true` from
-[`test`](#function-testfile), ensuring the tested file
-is included and passed to `callback`.
-
-### findUp.EXIT
-
-Flag used to stop searching for files returned to [`test`](#function-testfile).
+The different flags can be combined by using the pipe operator:
+`vfileFindUp.INCLUDE | vfileFindUp.BREAK`.
 
 ## License
 
-[MIT](LICENSE) © [Titus Wormer](http://wooorm.com)
+[MIT][license] © [Titus Wormer][author]
+
+<!-- Definitions -->
+
+[travis-badge]: https://img.shields.io/travis/wooorm/vfile-find-up.svg
+
+[travis]: https://travis-ci.org/wooorm/vfile-find-up
+
+[codecov-badge]: https://img.shields.io/codecov/c/github/wooorm/vfile-find-up.svg
+
+[codecov]: https://codecov.io/github/wooorm/vfile-find-up
+
+[npm-install]: https://docs.npmjs.com/cli/install
+
+[license]: LICENSE
+
+[author]: http://wooorm.com
+
+[vfile]: https://github.com/wooorm/vfile
+
+[test]: #function-testfile
