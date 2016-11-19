@@ -4,7 +4,7 @@ Find [vfile][]s by searching the file system upwards.
 
 ## Installation
 
-[npm][npm-install]:
+[npm][]:
 
 ```bash
 npm install vfile-find-up
@@ -12,43 +12,17 @@ npm install vfile-find-up
 
 ## Usage
 
-Dependencies:
-
 ```js
 var findUp = require('vfile-find-up');
-```
 
-Search for files named `package.json` from the current working directory
-upwards:
-
-```js
+// Search for files named `package.json` from the current
+// working directory upwards:
 findUp.all('package.json', console.log);
-```
-
-Logs:
-
-```js
-null [ VFile {
-    data: {},
-    messages: [],
-    history: [ '/Users/tilde/projects/oss/vfile-find-up/package.json' ],
-    cwd: '/Users/tilde/projects/oss/vfile-find-up' } ]
-```
-
-Search for the first file:
-
-```js
-findUp.one('package.json', console.log);
-```
-
-Logs:
-
-```js
-null VFile {
-  data: {},
-  messages: [],
-  history: [ '/Users/tilde/projects/oss/vfile-find-up/package.json' ],
-  cwd: '/Users/tilde/projects/oss/vfile-find-up' }
+// null [ VFile {
+//     data: {},
+//     messages: [],
+//     history: [ '/Users/tilde/projects/oss/vfile-find-up/package.json' ],
+//     cwd: '/Users/tilde/projects/oss/vfile-find-up' } ]
 ```
 
 ## API
@@ -105,7 +79,7 @@ The different flags can be combined by using the pipe operator:
 
 [codecov]: https://codecov.io/github/wooorm/vfile-find-up
 
-[npm-install]: https://docs.npmjs.com/cli/install
+[npm]: https://docs.npmjs.com/cli/install
 
 [license]: LICENSE
 
