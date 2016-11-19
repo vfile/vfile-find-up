@@ -1,11 +1,3 @@
-/**
- * @author Titus Wormer
- * @copyright 2015 Titus Wormer
- * @license MIT
- * @module vfile:find-up
- * @fileoverview Find files by searching the file system upwards.
- */
-
 'use strict';
 
 /* Dependencies. */
@@ -29,38 +21,17 @@ var resolve = path.resolve;
 var dirname = path.dirname;
 var basename = path.basename;
 
-/**
- * Find a file or a directory upwards.
- *
- * @param {Function} test - Filter function.
- * @param {string?} [cwd] - Path to search from.
- * @param {Function} callback - Invoked with a result.
- */
+/* Find a file or a directory upwards. */
 function findOne(test, cwd, callback) {
   return find(test, cwd, callback, true);
 }
 
-/**
- * Find files or directories upwards.
- *
- * @param {Function} test - Filter function.
- * @param {string?} [cwd] - Directory to search from.
- * @param {Function} callback - Invoked with results.
- */
+/* Find files or directories upwards. */
 function findAll(test, cwd, callback) {
   return find(test, cwd, callback);
 }
 
-/**
- * Find applicable files.
- *
- * @param {*} test - Filter.
- * @param {string?} cwd - Path to search from.
- * @param {Function} callback - Invoked with results.
- * @param {boolean?} [one] - When `true`, returns the
- *   first result (`string`), otherwise, returns an array
- *   of strings.
- */
+/* Find applicable files. */
 function find(test, cwd, callback, one) {
   var results = [];
   var current;
@@ -78,14 +49,8 @@ function find(test, cwd, callback, one) {
 
   return;
 
-  /**
-   * Test a file and check what should be done with
-   * the resulting file.
-   *
-   * @param {string} filePath - Path to file.
-   * @return {boolean} - `true` when `callback` is
-   *   invoked and iteration should stop.
-   */
+  /* Test a file and check what should be done with
+   * the resulting file. */
   function handle(filePath) {
     var file = toVFile(filePath);
     var result = test(file);
@@ -105,7 +70,7 @@ function find(test, cwd, callback, one) {
     }
   }
 
-  /** Check one directory. */
+  /* Check one directory. */
   function once(child) {
     if (handle(current) === true) {
       return;
@@ -141,7 +106,7 @@ function find(test, cwd, callback, one) {
   }
 }
 
-/** Augment `test` */
+/* Augment `test` */
 function augment(test) {
   if (typeof test === 'function') {
     return test;
@@ -150,7 +115,7 @@ function augment(test) {
   return typeof test === 'string' ? testString(test) : multiple(test);
 }
 
-/** Check multiple tests. */
+/* Check multiple tests. */
 function multiple(test) {
   var length = test.length;
   var index = -1;
@@ -179,16 +144,11 @@ function multiple(test) {
   }
 }
 
-/**
- * Wrap a string given as a test.
+/* Wrap a string given as a test.
  *
  * A normal string checks for equality to both the filename
  * and extension. A string starting with a `.` checks for
- * that equality too, and also to just the extension.
- *
- * @param {string} test - Basename or extname.
- * @return {Function} - File-path test.
- */
+ * that equality too, and also to just the extension. */
 function testString(test) {
   return check;
 
@@ -197,7 +157,7 @@ function testString(test) {
   }
 }
 
-/** Check a mask. */
+/* Check a mask. */
 function mask(value, bitmask) {
   return (value & bitmask) === bitmask;
 }

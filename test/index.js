@@ -1,11 +1,3 @@
-/**
- * @author Titus Wormer
- * @copyright 2015 Titus Wormer
- * @license MIT
- * @module vfile:find-up
- * @fileoverview Test suite for `vfile-find-up`.
- */
-
 'use strict';
 
 /* eslint-disable handle-callback-err */
@@ -206,13 +198,8 @@ test('findUp.all', function (t) {
   });
 });
 
-/**
- * Utility to ensure no outbound files are included, and
- * to strip the CWD from paths.
- *
- * @param {Array.<File>} files - Files to check.
- * @return {Array.<string>} - Checked files.
- */
+/* Utility to ensure no outbound files are included, and
+ * to strip the CWD from paths. */
 function check(files) {
   if (files === null) {
     return [files];
