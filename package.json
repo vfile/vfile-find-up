@@ -16,8 +16,8 @@
   "files": [
     "index.js"
   ],
-  "repository": "https://github.com/wooorm/vfile-find-up",
-  "bugs": "https://github.com/wooorm/vfile-find-up/issues",
+  "repository": "https://github.com/vfile/vfile-find-up",
+  "bugs": "https://github.com/vfile/vfile-find-up/issues",
   "author": "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)",
   "contributors": [
     "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)"
