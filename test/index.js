@@ -2,6 +2,7 @@
 
 /* eslint-disable handle-callback-err */
 
+var fs = require('fs');
 var test = require('tape');
 var path = require('path');
 var findUp = require('..');
@@ -10,6 +11,10 @@ var join = path.join;
 var base = join.bind(null, process.cwd());
 
 var deepest = base('test', 'fixture', 'foo', 'bar', 'baz');
+
+try {
+  fs.unlinkSync('package-lock.json');
+} catch (err) {}
 
 test('findUp.one', function (t) {
   t.plan(12);
