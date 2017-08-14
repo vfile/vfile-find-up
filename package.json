@@ -23,11 +23,11 @@
     "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)"
   ],
   "devDependencies": {
-    "nyc": "^10.0.0",
-    "remark-cli": "^3.0.0",
-    "remark-preset-wooorm": "^2.0.0",
+    "nyc": "^11.0.0",
+    "remark-cli": "^4.0.0",
+    "remark-preset-wooorm": "^3.0.0",
     "tape": "^4.0.0",
-    "xo": "^0.17.1"
+    "xo": "^0.18.1"
   },
   "scripts": {
     "build-md": "remark . -qfo",
@@ -44,9 +44,12 @@
     "branches": 100
   },
   "xo": {
-    "space": true
+    "space": true,
+    "esnext": false
   },
   "remarkConfig": {
-    "plugins": ["preset-wooorm"]
+    "plugins": [
+      "preset-wooorm"
+    ]
   }
 }
