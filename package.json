@@ -10,18 +10,18 @@
     "up",
     "upward"
   ],
-  "dependencies": {
-    "to-vfile": "^2.0.0"
-  },
-  "files": [
-    "index.js"
-  ],
-  "repository": "https://github.com/vfile/vfile-find-up",
+  "repository": "vfile/vfile-find-up",
   "bugs": "https://github.com/vfile/vfile-find-up/issues",
   "author": "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)",
   "contributors": [
     "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)"
   ],
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "to-vfile": "^2.0.0"
+  },
   "devDependencies": {
     "nyc": "^11.0.0",
     "remark-cli": "^4.0.0",
