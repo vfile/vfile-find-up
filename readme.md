@@ -15,40 +15,52 @@ npm install vfile-find-up
 ```js
 var findUp = require('vfile-find-up');
 
-// Search for files named `package.json` from the current
-// working directory upwards:
 findUp.all('package.json', console.log);
-// null [ VFile {
-//     data: {},
-//     messages: [],
-//     history: [ '/Users/tilde/projects/oss/vfile-find-up/package.json' ],
-//     cwd: '/Users/tilde/projects/oss/vfile-find-up' } ]
+```
+
+Yields:
+
+```js
+null [ VFile {
+  data: {},
+  messages: [],
+  history: [ '/Users/tilde/projects/oss/vfile-find-up/package.json' ],
+  cwd: '/Users/tilde/projects/oss/vfile-find-up' } ]
 ```
 
 ## API
 
-### `vfileFindUp.all(tests[, path], callback)`
+### `findUp.all(tests[, path], callback)`
 
 Search for `tests` upwards.  Invokes callback with either an error
 or an array of files passing `tests`.
 Note: Virtual Files are not read (their `contents` is not populated).
 
-###### Parameters
+##### Parameters
 
-*   `tests` (`string|Function|Array.<tests>`)
-    — A test is a [function invoked with a `vfile`][test].
-    If an array is passed in, any test must match a given file for it
-    to be included.
-    If a `string` is passed in, the `basename` or `extname` of files
-    must match it for them to be included.
-*   `path` (`string`, default: `process.cwd()`)
-    — Place to searching from;
-*   `callback` (`function cb(err[, files])`);
-    — Function invoked with all matching files.
+###### `tests`
 
-### `vfileFindUp.one(tests[, path], callback)`
+Things to search for (`string|Function|Array.<tests>`).
 
-Like `vfileFindUp.all`, but invokes `callback` with the first found
+If a `string` is passed in, the `basename` or `extname` of files
+must match it for them to be included.
+
+If an array is passed in, any test must match a given file for it
+to be included.
+
+Otherwise, they must be [`function`][test].
+
+###### `path`
+
+Place to searching from (`string`, default: `process.cwd()`).
+
+###### `callback`
+
+Function invoked with all matching files (`function cb(err[, files])`).
+
+### `findUp.one(tests[, path], callback)`
+
+Like `findUp.all`, but invokes `callback` with the first found
 file, or `null`.
 
 ### `function test(file)`
@@ -56,18 +68,18 @@ file, or `null`.
 Check whether a virtual file should be included.  Invoked with a
 [vfile][].
 
-###### Returns
+##### Returns
 
-*   `true` or `vfileFindUp.INCLUDE` — Include the file in the results;
-*   `vfileFindUp.BREAK` — Stop searching for files;
+*   `true` or `findUp.INCLUDE` — Include the file in the results;
+*   `findUp.BREAK` — Stop searching for files;
 *   anything else is ignored: the file is not included.
 
 The different flags can be combined by using the pipe operator:
-`vfileFindUp.INCLUDE | vfileFindUp.BREAK`.
+`findUp.INCLUDE | findUp.BREAK`.
 
 ## License
 
-[MIT][license] © [Titus Wormer][author]
+[MIT][] © [Titus Wormer][author]
 
 <!-- Definitions -->
 
@@ -81,7 +93,7 @@ The different flags can be combined by using the pipe operator:
 
 [npm]: https://docs.npmjs.com/cli/install
 
-[license]: LICENSE
+[mit]: LICENSE
 
 [author]: http://wooorm.com
 
