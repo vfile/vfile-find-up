@@ -2,16 +2,13 @@
 
 /* eslint-disable handle-callback-err */
 
-/* Dependencies. */
 var test = require('tape');
 var path = require('path');
 var findUp = require('..');
 
-/* Methods. */
 var join = path.join;
 var base = join.bind(null, process.cwd());
 
-/* Constants. */
 var deepest = base('test', 'fixture', 'foo', 'bar', 'baz');
 
 test('findUp.one', function (t) {
@@ -206,13 +203,19 @@ function check(files) {
   }
 
   return ('length' in files ? files : [files])
-    .map(function (file) {
-      return file.path;
-    })
-    .filter(function (filePath) {
-      return filePath.indexOf(base()) === 0;
-    })
-    .map(function (filePath) {
-      return filePath.slice(base().length + 1);
-    });
+    .map(pick)
+    .filter(inside)
+    .map(relative);
+
+  function pick(file) {
+    return file.path;
+  }
+
+  function inside(filePath) {
+    return filePath.indexOf(base()) === 0;
+  }
+
+  function relative(filePath) {
+    return filePath.slice(base().length + 1);
+  }
 }

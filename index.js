@@ -1,21 +1,17 @@
 'use strict';
 
-/* Dependencies. */
 var fs = require('fs');
 var path = require('path');
 var toVFile = require('to-vfile');
 
-/* Constants. */
 var INCLUDE = 1;
 var BREAK = 4;
 
-/* Expose. */
 exports.INCLUDE = INCLUDE;
 exports.BREAK = BREAK;
 exports.one = findOne;
 exports.all = findAll;
 
-/* Methods. */
 var readdir = fs.readdir;
 var resolve = path.resolve;
 var dirname = path.dirname;
@@ -47,8 +43,6 @@ function find(test, cwd, callback, one) {
 
   once();
 
-  return;
-
   /* Test a file and check what should be done with
    * the resulting file. */
   function handle(filePath) {
@@ -76,7 +70,9 @@ function find(test, cwd, callback, one) {
       return;
     }
 
-    readdir(current, function (err, entries) {
+    readdir(current, onread);
+
+    function onread(err, entries) {
       var length = entries ? entries.length : 0;
       var index = -1;
       var entry;
@@ -102,7 +98,7 @@ function find(test, cwd, callback, one) {
       }
 
       once(basename(child));
-    });
+    }
   }
 }
 
