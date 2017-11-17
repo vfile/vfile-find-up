@@ -77,6 +77,13 @@ Check whether a virtual file should be included.  Invoked with a
 The different flags can be combined by using the pipe operator:
 `findUp.INCLUDE | findUp.BREAK`.
 
+## Contribute
+
+See [`contribute.md` in `vfile/vfile`][contribute] for ways to get started.
+
+This organisation has a [Code of Conduct][coc].  By interacting with this
+repository, organisation, or community you agree to abide by its terms.
+
 ## License
 
 [MIT][] © [Titus Wormer][author]
@@ -100,3 +107,7 @@ The different flags can be combined by using the pipe operator:
 [vfile]: https://github.com/vfile/vfile
 
 [test]: #function-testfile
+
+[contribute]: https://github.com/vfile/vfile/blob/master/contributing.md
+
+[coc]: https://github.com/vfile/vfile/blob/master/code-of-conduct.md
