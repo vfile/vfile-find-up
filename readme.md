@@ -13,9 +13,9 @@ npm install vfile-find-up
 ## Usage
 
 ```js
-var findUp = require('vfile-find-up');
+var findUp = require('vfile-find-up')
 
-findUp.all('package.json', console.log);
+findUp.all('package.json', console.log)
 ```
 
 Yields:

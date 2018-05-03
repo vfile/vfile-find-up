@@ -1,103 +1,103 @@
-'use strict';
+'use strict'
 
-var fs = require('fs');
-var path = require('path');
-var toVFile = require('to-vfile');
+var fs = require('fs')
+var path = require('path')
+var toVFile = require('to-vfile')
 
-var INCLUDE = 1;
-var BREAK = 4;
+var INCLUDE = 1
+var BREAK = 4
 
-exports.INCLUDE = INCLUDE;
-exports.BREAK = BREAK;
-exports.one = findOne;
-exports.all = findAll;
+exports.INCLUDE = INCLUDE
+exports.BREAK = BREAK
+exports.one = findOne
+exports.all = findAll
 
-var readdir = fs.readdir;
-var resolve = path.resolve;
-var dirname = path.dirname;
-var basename = path.basename;
+var readdir = fs.readdir
+var resolve = path.resolve
+var dirname = path.dirname
+var basename = path.basename
 
 /* Find a file or a directory upwards. */
 function findOne(test, cwd, callback) {
-  return find(test, cwd, callback, true);
+  return find(test, cwd, callback, true)
 }
 
 /* Find files or directories upwards. */
 function findAll(test, cwd, callback) {
-  return find(test, cwd, callback);
+  return find(test, cwd, callback)
 }
 
 /* Find applicable files. */
 function find(test, cwd, callback, one) {
-  var results = [];
-  var current;
+  var results = []
+  var current
 
-  test = augment(test);
+  test = augment(test)
 
   if (!callback) {
-    callback = cwd;
-    cwd = null;
+    callback = cwd
+    cwd = null
   }
 
-  current = cwd ? resolve(cwd) : process.cwd();
+  current = cwd ? resolve(cwd) : process.cwd()
 
-  once();
+  once()
 
   /* Test a file and check what should be done with
    * the resulting file. */
   function handle(filePath) {
-    var file = toVFile(filePath);
-    var result = test(file);
+    var file = toVFile(filePath)
+    var result = test(file)
 
     if (mask(result, INCLUDE)) {
       if (one) {
-        callback(null, file);
-        return true;
+        callback(null, file)
+        return true
       }
 
-      results.push(file);
+      results.push(file)
     }
 
     if (mask(result, BREAK)) {
-      callback(null, one ? null : results);
-      return true;
+      callback(null, one ? null : results)
+      return true
     }
   }
 
   /* Check one directory. */
   function once(child) {
     if (handle(current) === true) {
-      return;
+      return
     }
 
-    readdir(current, onread);
+    readdir(current, onread)
 
     function onread(err, entries) {
-      var length = entries ? entries.length : 0;
-      var index = -1;
-      var entry;
+      var length = entries ? entries.length : 0
+      var index = -1
+      var entry
 
       if (err) {
-        entries = [];
+        entries = []
       }
 
       while (++index < length) {
-        entry = entries[index];
+        entry = entries[index]
 
         if (entry !== child && handle(resolve(current, entry)) === true) {
-          return;
+          return
         }
       }
 
-      child = current;
-      current = dirname(current);
+      child = current
+      current = dirname(current)
 
       if (current === child) {
-        callback(null, one ? null : results);
-        return;
+        callback(null, one ? null : results)
+        return
       }
 
-      once(basename(child));
+      once(basename(child))
     }
   }
 }
@@ -105,38 +105,38 @@ function find(test, cwd, callback, one) {
 /* Augment `test` */
 function augment(test) {
   if (typeof test === 'function') {
-    return test;
+    return test
   }
 
-  return typeof test === 'string' ? testString(test) : multiple(test);
+  return typeof test === 'string' ? testString(test) : multiple(test)
 }
 
 /* Check multiple tests. */
 function multiple(test) {
-  var length = test.length;
-  var index = -1;
-  var tests = [];
+  var length = test.length
+  var index = -1
+  var tests = []
 
   while (++index < length) {
-    tests[index] = augment(test[index]);
+    tests[index] = augment(test[index])
   }
 
-  return check;
+  return check
 
   function check(file) {
-    var result;
+    var result
 
-    index = -1;
+    index = -1
 
     while (++index < length) {
-      result = tests[index](file);
+      result = tests[index](file)
 
       if (result) {
-        return result;
+        return result
       }
     }
 
-    return false;
+    return false
   }
 }
 
@@ -146,14 +146,14 @@ function multiple(test) {
  * and extension. A string starting with a `.` checks for
  * that equality too, and also to just the extension. */
 function testString(test) {
-  return check;
+  return check
 
   function check(file) {
-    return test === file.basename || test === file.extname;
+    return test === file.basename || test === file.extname
   }
 }
 
 /* Check a mask. */
 function mask(value, bitmask) {
-  return (value & bitmask) === bitmask;
+  return (value & bitmask) === bitmask
 }
