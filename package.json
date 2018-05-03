@@ -1,6 +1,6 @@
 {
   "name": "vfile-find-up",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Find files by searching the file system upwards",
   "license": "MIT",
   "keywords": [
