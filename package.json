@@ -20,7 +20,7 @@
     "index.js"
   ],
   "dependencies": {
-    "to-vfile": "^4.0.0"
+    "to-vfile": "^5.0.0"
   },
   "devDependencies": {
     "nyc": "^13.0.0",
