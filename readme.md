@@ -100,7 +100,7 @@ repository, organisation, or community you agree to abide by its terms.
 
 [npm]: https://docs.npmjs.com/cli/install
 
-[mit]: LICENSE
+[mit]: license
 
 [author]: http://wooorm.com
 
