@@ -3,8 +3,8 @@
 /* eslint-disable handle-callback-err */
 
 var fs = require('fs')
-var test = require('tape')
 var path = require('path')
+var test = require('tape')
 var findUp = require('..')
 
 var join = path.join
@@ -14,12 +14,12 @@ var deepest = base('test', 'fixture', 'foo', 'bar', 'baz')
 
 try {
   fs.unlinkSync('package-lock.json')
-} catch (err) {}
+} catch (error) {}
 
 test('findUp.one', function(t) {
   t.plan(12)
 
-  findUp.one('package.json', function(err, file) {
+  findUp.one('package.json', function(error, file) {
     t.deepEqual(
       check(file),
       ['package.json'],
@@ -27,11 +27,14 @@ test('findUp.one', function(t) {
     )
   })
 
-  findUp.one('package.json', deepest, function(err, file) {
+  findUp.one('package.json', deepest, function(error, file) {
     t.deepEqual(check(file), ['package.json'], 'should search for one file')
   })
 
-  findUp.one('package.json', join(deepest, 'qux', 'quux'), function(err, file) {
+  findUp.one('package.json', join(deepest, 'qux', 'quux'), function(
+    error,
+    file
+  ) {
     t.deepEqual(
       check(file),
       ['package.json'],
@@ -39,7 +42,7 @@ test('findUp.one', function(t) {
     )
   })
 
-  findUp.one('.json', deepest, function(err, file) {
+  findUp.one('.json', deepest, function(error, file) {
     t.deepEqual(
       check(file),
       [join('test', 'fixture', 'foo.json')],
@@ -52,7 +55,7 @@ test('findUp.one', function(t) {
       return file.stem === 'quux'
     },
     deepest,
-    function(err, file) {
+    function(error, file) {
       t.deepEqual(
         check(file),
         [join('test', 'fixture', 'foo', 'bar', 'quux.md')],
@@ -61,7 +64,7 @@ test('findUp.one', function(t) {
     }
   )
 
-  findUp.one('.test', deepest, function(err, file) {
+  findUp.one('.test', deepest, function(error, file) {
     t.deepEqual(
       check(file),
       [join('test', 'fixture', '.test')],
@@ -69,7 +72,7 @@ test('findUp.one', function(t) {
     )
   })
 
-  findUp.one('.md', deepest, function(err, file) {
+  findUp.one('.md', deepest, function(error, file) {
     t.deepEqual(
       check(file),
       [join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md')],
@@ -77,7 +80,7 @@ test('findUp.one', function(t) {
     )
   })
 
-  findUp.one(['.md', '.json'], deepest, function(err, file) {
+  findUp.one(['.md', '.json'], deepest, function(error, file) {
     t.deepEqual(
       check(file),
       [join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md')],
@@ -85,11 +88,11 @@ test('findUp.one', function(t) {
     )
   })
 
-  findUp.one('!', deepest, function(err, file) {
+  findUp.one('!', deepest, function(error, file) {
     t.equal(file, null, 'should pass `null` when not found #1')
   })
 
-  findUp.one(['!', '?'], deepest, function(err, file) {
+  findUp.one(['!', '?'], deepest, function(error, file) {
     t.equal(file, null, 'should pass `null` when not found #2')
   })
 
@@ -100,7 +103,7 @@ test('findUp.one', function(t) {
       }
     },
     deepest,
-    function(err, file) {
+    function(error, file) {
       t.deepEqual(
         check(file),
         [join('test', 'fixture', 'foo')],
@@ -116,7 +119,7 @@ test('findUp.one', function(t) {
       }
     },
     deepest,
-    function(err, file) {
+    function(error, file) {
       t.deepEqual(check(file), [null], 'should support `findUp.BREAK`')
     }
   )
@@ -125,7 +128,7 @@ test('findUp.one', function(t) {
 test('findUp.all', function(t) {
   t.plan(10)
 
-  findUp.all('package.json', function(err, files) {
+  findUp.all('package.json', function(error, files) {
     t.deepEqual(
       check(files),
       ['package.json'],
@@ -133,7 +136,7 @@ test('findUp.all', function(t) {
     )
   })
 
-  findUp.all('package.json', deepest, function(err, files) {
+  findUp.all('package.json', deepest, function(error, files) {
     t.deepEqual(
       check(files),
       ['package.json'],
@@ -142,7 +145,7 @@ test('findUp.all', function(t) {
   })
 
   findUp.all('package.json', join(deepest, 'qux', 'quux'), function(
-    err,
+    error,
     files
   ) {
     t.deepEqual(
@@ -152,7 +155,7 @@ test('findUp.all', function(t) {
     )
   })
 
-  findUp.all('.json', deepest, function(err, files) {
+  findUp.all('.json', deepest, function(error, files) {
     t.deepEqual(
       check(files),
       [join('test', 'fixture', 'foo.json'), 'package.json'],
@@ -165,7 +168,7 @@ test('findUp.all', function(t) {
       return file.stem.charAt(0) === 'q'
     },
     deepest,
-    function(err, files) {
+    function(error, files) {
       t.deepEqual(
         check(files),
         [
@@ -179,7 +182,7 @@ test('findUp.all', function(t) {
     }
   )
 
-  findUp.all('.test', deepest, function(err, files) {
+  findUp.all('.test', deepest, function(error, files) {
     t.deepEqual(
       check(files),
       [join('test', 'fixture', '.test')],
@@ -187,7 +190,7 @@ test('findUp.all', function(t) {
     )
   })
 
-  findUp.all(['.json', '.md'], deepest, function(err, files) {
+  findUp.all(['.json', '.md'], deepest, function(error, files) {
     t.deepEqual(
       check(files),
       [
@@ -203,7 +206,7 @@ test('findUp.all', function(t) {
     )
   })
 
-  findUp.all('!', deepest, function(err, files) {
+  findUp.all('!', deepest, function(error, files) {
     t.deepEqual(
       check(files),
       [],
@@ -211,7 +214,7 @@ test('findUp.all', function(t) {
     )
   })
 
-  findUp.all(['?', '!'], deepest, function(err, files) {
+  findUp.all(['?', '!'], deepest, function(error, files) {
     t.deepEqual(
       check(files),
       [],
@@ -234,7 +237,7 @@ test('findUp.all', function(t) {
       return mask
     },
     deepest,
-    function(err, files) {
+    function(error, files) {
       t.deepEqual(
         check(files),
         [

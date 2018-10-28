@@ -72,12 +72,12 @@ function find(test, cwd, callback, one) {
 
     readdir(current, onread)
 
-    function onread(err, entries) {
+    function onread(error, entries) {
       var length = entries ? entries.length : 0
       var index = -1
       var entry
 
-      if (err) {
+      if (error) {
         entries = []
       }
 
