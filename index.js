@@ -17,17 +17,17 @@ var resolve = path.resolve
 var dirname = path.dirname
 var basename = path.basename
 
-/* Find a file or a directory upwards. */
+// Find a file or a directory upwards.
 function findOne(test, cwd, callback) {
   return find(test, cwd, callback, true)
 }
 
-/* Find files or directories upwards. */
+// Find files or directories upwards.
 function findAll(test, cwd, callback) {
   return find(test, cwd, callback)
 }
 
-/* Find applicable files. */
+// Find applicable files.
 function find(test, cwd, callback, one) {
   var results = []
   var current
@@ -43,8 +43,7 @@ function find(test, cwd, callback, one) {
 
   once()
 
-  /* Test a file and check what should be done with
-   * the resulting file. */
+  // Test a file and check what should be done with the resulting file.
   function handle(filePath) {
     var file = toVFile(filePath)
     var result = test(file)
@@ -64,7 +63,7 @@ function find(test, cwd, callback, one) {
     }
   }
 
-  /* Check one directory. */
+  // Check one directory.
   function once(child) {
     if (handle(current) === true) {
       return
@@ -102,7 +101,7 @@ function find(test, cwd, callback, one) {
   }
 }
 
-/* Augment `test` */
+// Augment `test`
 function augment(test) {
   if (typeof test === 'function') {
     return test
@@ -111,7 +110,7 @@ function augment(test) {
   return typeof test === 'string' ? testString(test) : multiple(test)
 }
 
-/* Check multiple tests. */
+// Check multiple tests.
 function multiple(test) {
   var length = test.length
   var index = -1
@@ -140,11 +139,11 @@ function multiple(test) {
   }
 }
 
-/* Wrap a string given as a test.
- *
- * A normal string checks for equality to both the filename
- * and extension. A string starting with a `.` checks for
- * that equality too, and also to just the extension. */
+// Wrap a string given as a test.
+//
+// A normal string checks for equality to both the filename and extension.
+// A string starting with a `.` checks for that equality too, and also to just
+// the extension.
 function testString(test) {
   return check
 
@@ -153,7 +152,7 @@ function testString(test) {
   }
 }
 
-/* Check a mask. */
+// Check a mask.
 function mask(value, bitmask) {
   return (value & bitmask) === bitmask
 }

@@ -251,8 +251,8 @@ test('findUp.all', function(t) {
   )
 })
 
-/* Utility to ensure no outbound files are included, and
- * to strip the CWD from paths. */
+// Utility to ensure no outbound files are included, and to strip the CWD from
+// paths.
 function check(files) {
   if (files === null) {
     return [files]
