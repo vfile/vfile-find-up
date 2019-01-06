@@ -99,11 +99,11 @@ repository, organisation, or community you agree to abide by its terms.
 
 [build]: https://travis-ci.org/vfile/vfile-find-up
 
-[coverage-badge]: https://img.shields.io/codecov/c/github/vfile/vfile-v.svg
+[coverage-badge]: https://img.shields.io/codecov/c/github/vfile/vfile-find-up.svg
 
 [coverage]: https://codecov.io/github/vfile/vfile-find-up
 
-[downloads-badge]: https://img.shields.io/npm/dm/vfile-v.svg
+[downloads-badge]: https://img.shields.io/npm/dm/vfile-find-up.svg
 
 [downloads]: https://www.npmjs.com/package/vfile-find-up
 
