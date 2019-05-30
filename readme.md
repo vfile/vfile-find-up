@@ -3,15 +3,17 @@
 [![Build][build-badge]][build]
 [![Coverage][coverage-badge]][coverage]
 [![Downloads][downloads-badge]][downloads]
+[![Sponsors][sponsors-badge]][collective]
+[![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
 
 Find [vfile][]s by searching the file system upwards.
 
-## Installation
+## Install
 
 [npm][]:
 
-```bash
+```sh
 npm install vfile-find-up
 ```
 
@@ -37,21 +39,21 @@ null [ VFile {
 
 ### `findUp.all(tests[, path], callback)`
 
-Search for `tests` upwards.  Invokes callback with either an error
-or an array of files passing `tests`.
+Search for `tests` upwards.
+Invokes callback with either an error or an array of files passing `tests`.
 Note: Virtual Files are not read (their `contents` is not populated).
 
 ##### Parameters
 
 ###### `tests`
 
-Things to search for (`string|Function|Array.<tests>`).
+Things to search for (`string`, `Function`, or `Array.<tests>`).
 
-If a `string` is passed in, the `basename` or `extname` of files
-must match it for them to be included.
+If a `string` is passed in, the `basename` or `extname` of files must match it
+for them to be included.
 
-If an array is passed in, any test must match a given file for it
-to be included.
+If an array is passed in, any test must match a given file for it to be
+included.
 
 Otherwise, they must be [`function`][test].
 
@@ -65,33 +67,35 @@ Function invoked with all matching files (`function cb(err[, files])`).
 
 ### `findUp.one(tests[, path], callback)`
 
-Like `findUp.all`, but invokes `callback` with the first found
-file, or `null`.
+Like `findUp.all`, but invokes `callback` with the first found file, or `null`.
 
 ### `function test(file)`
 
-Check whether a virtual file should be included.  Invoked with a
-[vfile][].
+Check whether a virtual file should be included.
+Invoked with a [vfile][].
 
 ##### Returns
 
-*   `true` or `findUp.INCLUDE` — Include the file in the results;
-*   `findUp.BREAK` — Stop searching for files;
-*   anything else is ignored: the file is not included.
+*   `true` or `findUp.INCLUDE` — Include the file in the results
+*   `findUp.BREAK` — Stop searching for files
+*   anything else is ignored: the file is not included
 
 The different flags can be combined by using the pipe operator:
 `findUp.INCLUDE | findUp.BREAK`.
 
 ## Contribute
 
-See [`contributing.md` in `vfile/vfile`][contributing] for ways to get started.
+See [`contributing.md`][contributing] in [`vfile/.github`][health] for ways to
+get started.
+See [`support.md`][support] for ways to get help.
 
-This organisation has a [Code of Conduct][coc].  By interacting with this
-repository, organisation, or community you agree to abide by its terms.
+This project has a [Code of Conduct][coc].
+By interacting with this repository, organisation, or community you agree to
+abide by its terms.
 
 ## License
 
-[MIT][] © [Titus Wormer][author]
+[MIT][license] © [Titus Wormer][author]
 
 <!-- Definitions -->
 
@@ -107,20 +111,30 @@ repository, organisation, or community you agree to abide by its terms.
 
 [downloads]: https://www.npmjs.com/package/vfile-find-up
 
+[sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
+
+[backers-badge]: https://opencollective.com/unified/backers/badge.svg
+
+[collective]: https://opencollective.com/unified
+
 [chat-badge]: https://img.shields.io/badge/join%20the%20community-on%20spectrum-7b16ff.svg
 
 [chat]: https://spectrum.chat/unified/vfile
 
 [npm]: https://docs.npmjs.com/cli/install
 
-[mit]: license
+[contributing]: https://github.com/vfile/.github/blob/master/contributing.md
+
+[support]: https://github.com/vfile/.github/blob/master/support.md
+
+[health]: https://github.com/vfile/.github
+
+[coc]: https://github.com/vfile/.github/blob/master/code-of-conduct.md
+
+[license]: license
 
 [author]: https://wooorm.com
 
 [vfile]: https://github.com/vfile/vfile
 
 [test]: #function-testfile
-
-[contributing]: https://github.com/vfile/vfile/blob/master/contributing.md
-
-[coc]: https://github.com/vfile/vfile/blob/master/code-of-conduct.md
