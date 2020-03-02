@@ -1,10 +1,15 @@
 {
   "name": "vfile-find-up",
   "version": "5.0.0",
-  "description": "Find files by searching the file system upwards",
+  "description": "vfile utility to find one or more files by searching the file system upwards",
   "license": "MIT",
   "keywords": [
     "vfile",
+    "vfile-util",
+    "util",
+    "utility",
+    "virtual",
+    "file",
     "walk",
     "find",
     "up",
