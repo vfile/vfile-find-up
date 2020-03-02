@@ -12,7 +12,7 @@ var deepest = base('test', 'fixture', 'foo', 'bar', 'baz')
 
 try {
   fs.unlinkSync('package-lock.json')
-} catch (error) {}
+} catch (_) {}
 
 test('findUp.one', function(t) {
   t.plan(12)
