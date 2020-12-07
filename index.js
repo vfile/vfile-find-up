@@ -4,18 +4,10 @@ var fs = require('fs')
 var path = require('path')
 var toVFile = require('to-vfile')
 
-var INCLUDE = 1
-var BREAK = 4
-
-exports.INCLUDE = INCLUDE
-exports.BREAK = BREAK
+exports.INCLUDE = 1
+exports.BREAK = 4
 exports.one = findOne
 exports.all = findAll
-
-var readdir = fs.readdir
-var resolve = path.resolve
-var dirname = path.dirname
-var basename = path.basename
 
 // Find a file or a directory upwards.
 function findOne(test, cwd, callback) {
@@ -39,7 +31,7 @@ function find(test, cwd, callback, one) {
     cwd = null
   }
 
-  current = cwd ? resolve(cwd) : process.cwd()
+  current = cwd ? path.resolve(cwd) : process.cwd()
 
   once()
 
@@ -48,7 +40,7 @@ function find(test, cwd, callback, one) {
     var file = toVFile(filePath)
     var result = test(file)
 
-    if (mask(result, INCLUDE)) {
+    if ((result & 1) === 1) {
       if (one) {
         callback(null, file)
         return true
@@ -57,7 +49,7 @@ function find(test, cwd, callback, one) {
       results.push(file)
     }
 
-    if (mask(result, BREAK)) {
+    if ((result & 4) === 4) {
       callback(null, one ? null : results)
       return true
     }
@@ -69,10 +61,9 @@ function find(test, cwd, callback, one) {
       return
     }
 
-    readdir(current, onread)
+    fs.readdir(current, onread)
 
     function onread(error, entries) {
-      var length = entries ? entries.length : 0
       var index = -1
       var entry
 
@@ -80,54 +71,52 @@ function find(test, cwd, callback, one) {
         entries = []
       }
 
-      while (++index < length) {
+      while (++index < entries.length) {
         entry = entries[index]
 
-        if (entry !== child && handle(resolve(current, entry)) === true) {
+        if (entry !== child && handle(path.resolve(current, entry)) === true) {
           return
         }
       }
 
       child = current
-      current = dirname(current)
+      current = path.dirname(current)
 
       if (current === child) {
         callback(null, one ? null : results)
         return
       }
 
-      once(basename(child))
+      once(path.basename(child))
     }
   }
 }
 
 // Augment `test`
 function augment(test) {
-  if (typeof test === 'function') {
-    return test
-  }
-
-  return typeof test === 'string' ? testString(test) : multiple(test)
+  return typeof test === 'function'
+    ? test
+    : typeof test === 'string'
+    ? testString(test)
+    : multiple(test)
 }
 
 // Check multiple tests.
 function multiple(test) {
-  var length = test.length
-  var index = -1
   var tests = []
+  var index = -1
 
-  while (++index < length) {
+  while (++index < test.length) {
     tests[index] = augment(test[index])
   }
 
   return check
 
   function check(file) {
+    var index = -1
     var result
 
-    index = -1
-
-    while (++index < length) {
+    while (++index < tests.length) {
       result = tests[index](file)
 
       if (result) {
@@ -140,19 +129,10 @@ function multiple(test) {
 }
 
 // Wrap a string given as a test.
-//
-// A normal string checks for equality to both the filename and extension.
-// A string starting with a `.` checks for that equality too, and also to just
-// the extension.
 function testString(test) {
   return check
 
   function check(file) {
     return test === file.basename || test === file.extname
   }
-}
-
-// Check a mask.
-function mask(value, bitmask) {
-  return (value & bitmask) === bitmask
 }
