@@ -29,16 +29,17 @@ test('findUp.one', function (t) {
     t.deepEqual(check(file), ['package.json'], 'should search for one file')
   })
 
-  findUp.one('package.json', join(deepest, 'qux', 'quux'), function (
-    error,
-    file
-  ) {
-    t.deepEqual(
-      check(file),
-      ['package.json'],
-      'should ignore unreadable directories'
-    )
-  })
+  findUp.one(
+    'package.json',
+    join(deepest, 'qux', 'quux'),
+    function (error, file) {
+      t.deepEqual(
+        check(file),
+        ['package.json'],
+        'should ignore unreadable directories'
+      )
+    }
+  )
 
   findUp.one('.json', deepest, function (error, file) {
     t.deepEqual(
@@ -142,16 +143,17 @@ test('findUp.all', function (t) {
     )
   })
 
-  findUp.all('package.json', join(deepest, 'qux', 'quux'), function (
-    error,
-    files
-  ) {
-    t.deepEqual(
-      check(files),
-      ['package.json'],
-      'should ignore unreadable directories'
-    )
-  })
+  findUp.all(
+    'package.json',
+    join(deepest, 'qux', 'quux'),
+    function (error, files) {
+      t.deepEqual(
+        check(files),
+        ['package.json'],
+        'should ignore unreadable directories'
+      )
+    }
+  )
 
   findUp.all('.json', deepest, function (error, files) {
     t.deepEqual(
