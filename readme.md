@@ -99,9 +99,9 @@ abide by its terms.
 
 <!-- Definitions -->
 
-[build-badge]: https://img.shields.io/travis/vfile/vfile-find-up.svg
+[build-badge]: https://github.com/vfile/vfile-find-up/workflows/main/badge.svg
 
-[build]: https://travis-ci.org/vfile/vfile-find-up
+[build]: https://github.com/vfile/vfile-find-up/actions
 
 [coverage-badge]: https://img.shields.io/codecov/c/github/vfile/vfile-find-up.svg
 
