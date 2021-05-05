@@ -44,11 +44,16 @@ This package exports the following identifiers: `findUp`, `findUpOne`, `INCLUDE`
 `BREAK`.
 There is no default export.
 
-### `findUp(tests[, path], callback)`
+### `findUp(tests[, path][, callback])`
 
 Search for `tests` upwards.
-Invokes callback with either an error or an array of files passing `tests`.
+Calls callback with either an error or an array of files passing `tests`.
 Note: Virtual Files are not read (their `contents` is not populated).
+
+##### Sigantures
+
+*   `(tests: Test, path?: string, callback: Callback): void`
+*   `(tests: Test, path?: string): Promise.<Array.<VFile>>`
 
 ##### Parameters
 
@@ -72,14 +77,15 @@ Place to searching from (`string`, default: `process.cwd()`).
 
 Function called with all matching files (`function cb(err[, files])`).
 
-### `findUpOne(tests[, path], callback)`
+### `findUpOne(tests[, path][, callback])`
 
-Like `findUp`, but calls `callback` with the first found file, or `null`.
+Like `findUp`, but either calls `callback` with the first found file, or `null`
+or without callback resolves to a file or `null`.
 
 ### `function test(file)`
 
 Check whether a virtual file should be included.
-Invoked with a [vfile][].
+Called with a [vfile][].
 
 ##### Returns
 
