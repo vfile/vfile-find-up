@@ -1,21 +1,17 @@
-'use strict'
+import fs from 'fs'
+import path from 'path'
+import {toVFile} from 'to-vfile'
 
-var fs = require('fs')
-var path = require('path')
-var toVFile = require('to-vfile')
-
-exports.INCLUDE = 1
-exports.BREAK = 4
-exports.one = findOne
-exports.all = findAll
+export const INCLUDE = 1
+export const BREAK = 4
 
 // Find a file or a directory upwards.
-function findOne(test, cwd, callback) {
+export function findUpOne(test, cwd, callback) {
   return find(test, cwd, callback, true)
 }
 
 // Find files or directories upwards.
-function findAll(test, cwd, callback) {
+export function findUp(test, cwd, callback) {
   return find(test, cwd, callback)
 }
 

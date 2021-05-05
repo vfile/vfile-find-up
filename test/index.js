@@ -1,9 +1,7 @@
-'use strict'
-
-var fs = require('fs')
-var path = require('path')
-var test = require('tape')
-var findUp = require('..')
+import fs from 'fs'
+import path from 'path'
+import test from 'tape'
+import {findUp, findUpOne, INCLUDE, BREAK} from '../index.js'
 
 var join = path.join
 var base = join.bind(null, process.cwd())
@@ -12,12 +10,12 @@ var deepest = base('test', 'fixture', 'foo', 'bar', 'baz')
 
 try {
   fs.unlinkSync('package-lock.json')
-} catch (_) {}
+} catch {}
 
-test('findUp.one', function (t) {
+test('findUpOne', function (t) {
   t.plan(12)
 
-  findUp.one('package.json', function (error, file) {
+  findUpOne('package.json', function (error, file) {
     t.deepEqual(
       check(file),
       ['package.json'],
@@ -25,11 +23,11 @@ test('findUp.one', function (t) {
     )
   })
 
-  findUp.one('package.json', deepest, function (error, file) {
+  findUpOne('package.json', deepest, function (error, file) {
     t.deepEqual(check(file), ['package.json'], 'should search for one file')
   })
 
-  findUp.one(
+  findUpOne(
     'package.json',
     join(deepest, 'qux', 'quux'),
     function (error, file) {
@@ -41,7 +39,7 @@ test('findUp.one', function (t) {
     }
   )
 
-  findUp.one('.json', deepest, function (error, file) {
+  findUpOne('.json', deepest, function (error, file) {
     t.deepEqual(
       check(file),
       [join('test', 'fixture', 'foo.json')],
@@ -49,7 +47,7 @@ test('findUp.one', function (t) {
     )
   })
 
-  findUp.one(
+  findUpOne(
     function (file) {
       return file.stem === 'quux'
     },
@@ -63,7 +61,7 @@ test('findUp.one', function (t) {
     }
   )
 
-  findUp.one('.test', deepest, function (error, file) {
+  findUpOne('.test', deepest, function (error, file) {
     t.deepEqual(
       check(file),
       [join('test', 'fixture', '.test')],
@@ -71,7 +69,7 @@ test('findUp.one', function (t) {
     )
   })
 
-  findUp.one('.md', deepest, function (error, file) {
+  findUpOne('.md', deepest, function (error, file) {
     t.deepEqual(
       check(file),
       [join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md')],
@@ -79,7 +77,7 @@ test('findUp.one', function (t) {
     )
   })
 
-  findUp.one(['.md', '.json'], deepest, function (error, file) {
+  findUpOne(['.md', '.json'], deepest, function (error, file) {
     t.deepEqual(
       check(file),
       [join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md')],
@@ -87,18 +85,18 @@ test('findUp.one', function (t) {
     )
   })
 
-  findUp.one('!', deepest, function (error, file) {
+  findUpOne('!', deepest, function (error, file) {
     t.equal(file, null, 'should pass `null` when not found #1')
   })
 
-  findUp.one(['!', '?'], deepest, function (error, file) {
+  findUpOne(['!', '?'], deepest, function (error, file) {
     t.equal(file, null, 'should pass `null` when not found #2')
   })
 
-  findUp.one(
+  findUpOne(
     function (file) {
       if (file.stem === 'foo') {
-        return findUp.INCLUDE
+        return INCLUDE
       }
     },
     deepest,
@@ -106,28 +104,28 @@ test('findUp.one', function (t) {
       t.deepEqual(
         check(file),
         [join('test', 'fixture', 'foo')],
-        'should support `findUp.INCLUDE`'
+        'should support `INCLUDE`'
       )
     }
   )
 
-  findUp.one(
+  findUpOne(
     function (file) {
       if (file.stem === 'foo') {
-        return findUp.BREAK
+        return BREAK
       }
     },
     deepest,
     function (error, file) {
-      t.deepEqual(check(file), [null], 'should support `findUp.BREAK`')
+      t.deepEqual(check(file), [null], 'should support `BREAK`')
     }
   )
 })
 
-test('findUp.all', function (t) {
+test('findUp', function (t) {
   t.plan(10)
 
-  findUp.all('package.json', function (error, files) {
+  findUp('package.json', function (error, files) {
     t.deepEqual(
       check(files),
       ['package.json'],
@@ -135,7 +133,7 @@ test('findUp.all', function (t) {
     )
   })
 
-  findUp.all('package.json', deepest, function (error, files) {
+  findUp('package.json', deepest, function (error, files) {
     t.deepEqual(
       check(files),
       ['package.json'],
@@ -143,19 +141,15 @@ test('findUp.all', function (t) {
     )
   })
 
-  findUp.all(
-    'package.json',
-    join(deepest, 'qux', 'quux'),
-    function (error, files) {
-      t.deepEqual(
-        check(files),
-        ['package.json'],
-        'should ignore unreadable directories'
-      )
-    }
-  )
+  findUp('package.json', join(deepest, 'qux', 'quux'), function (error, files) {
+    t.deepEqual(
+      check(files),
+      ['package.json'],
+      'should ignore unreadable directories'
+    )
+  })
 
-  findUp.all('.json', deepest, function (error, files) {
+  findUp('.json', deepest, function (error, files) {
     t.deepEqual(
       check(files),
       [join('test', 'fixture', 'foo.json'), 'package.json'],
@@ -163,7 +157,7 @@ test('findUp.all', function (t) {
     )
   })
 
-  findUp.all(
+  findUp(
     function (file) {
       return file.stem.charAt(0) === 'q'
     },
@@ -182,7 +176,7 @@ test('findUp.all', function (t) {
     }
   )
 
-  findUp.all('.test', deepest, function (error, files) {
+  findUp('.test', deepest, function (error, files) {
     t.deepEqual(
       check(files),
       [join('test', 'fixture', '.test')],
@@ -190,7 +184,7 @@ test('findUp.all', function (t) {
     )
   })
 
-  findUp.all(['.json', '.md'], deepest, function (error, files) {
+  findUp(['.json', '.md'], deepest, function (error, files) {
     t.deepEqual(
       check(files),
       [
@@ -206,7 +200,7 @@ test('findUp.all', function (t) {
     )
   })
 
-  findUp.all('!', deepest, function (error, files) {
+  findUp('!', deepest, function (error, files) {
     t.deepEqual(
       check(files),
       [],
@@ -214,7 +208,7 @@ test('findUp.all', function (t) {
     )
   })
 
-  findUp.all(['?', '!'], deepest, function (error, files) {
+  findUp(['?', '!'], deepest, function (error, files) {
     t.deepEqual(
       check(files),
       [],
@@ -222,16 +216,16 @@ test('findUp.all', function (t) {
     )
   })
 
-  findUp.all(
+  findUp(
     function (file) {
       var mask = 0
 
       if (file.stem.charAt(0) === 'q') {
-        mask = findUp.INCLUDE
+        mask = INCLUDE
       }
 
       if (file.stem === 'quuux') {
-        mask |= findUp.BREAK
+        mask |= BREAK
       }
 
       return mask
@@ -245,7 +239,7 @@ test('findUp.all', function (t) {
           join('test', 'fixture', 'foo', 'bar', 'quux.md'),
           join('test', 'fixture', 'foo', 'quuux.md')
         ],
-        'should support `findUp.INCLUDE` and `findUp.BREAK`'
+        'should support `INCLUDE` and `BREAK`'
       )
     }
   )

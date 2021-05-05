@@ -11,6 +11,9 @@ Find [vfile][]s by searching the file system upwards.
 
 ## Install
 
+This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
+Node 12+ is needed to use it and it must be `import`ed instead of `require`d.
+
 [npm][]:
 
 ```sh
@@ -20,9 +23,9 @@ npm install vfile-find-up
 ## Use
 
 ```js
-var findUp = require('vfile-find-up')
+import {findUp} from 'vfile-find-up'
 
-findUp.all('package.json', console.log)
+findUp('package.json', console.log)
 ```
 
 Yields:
@@ -37,7 +40,11 @@ null [ VFile {
 
 ## API
 
-### `findUp.all(tests[, path], callback)`
+This package exports the following identifiers: `findUp`, `findUpOne`, `INCLUDE`,
+`BREAK`.
+There is no default export.
+
+### `findUp(tests[, path], callback)`
 
 Search for `tests` upwards.
 Invokes callback with either an error or an array of files passing `tests`.
@@ -63,11 +70,11 @@ Place to searching from (`string`, default: `process.cwd()`).
 
 ###### `callback`
 
-Function invoked with all matching files (`function cb(err[, files])`).
+Function called with all matching files (`function cb(err[, files])`).
 
-### `findUp.one(tests[, path], callback)`
+### `findUpOne(tests[, path], callback)`
 
-Like `findUp.all`, but invokes `callback` with the first found file, or `null`.
+Like `findUp`, but calls `callback` with the first found file, or `null`.
 
 ### `function test(file)`
 
@@ -76,12 +83,12 @@ Invoked with a [vfile][].
 
 ##### Returns
 
-*   `true` or `findUp.INCLUDE` — Include the file in the results
-*   `findUp.BREAK` — Stop searching for files
+*   `true` or `INCLUDE` — Include the file in the results
+*   `BREAK` — Stop searching for files
 *   anything else is ignored: the file is not included
 
 The different flags can be combined by using the pipe operator:
-`findUp.INCLUDE | findUp.BREAK`.
+`INCLUDE | BREAK`.
 
 ## Contribute
 
