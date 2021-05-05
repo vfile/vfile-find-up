@@ -259,19 +259,7 @@ function check(files) {
   }
 
   return ('length' in files ? files : [files])
-    .map(pick)
-    .filter(inside)
-    .map(relative)
-
-  function pick(file) {
-    return file.path
-  }
-
-  function inside(filePath) {
-    return filePath.indexOf(base()) === 0
-  }
-
-  function relative(filePath) {
-    return filePath.slice(base().length + 1)
-  }
+    .map((file) => file.path)
+    .filter((filePath) => filePath.indexOf(base()) === 0)
+    .map((filePath) => filePath.slice(base().length + 1))
 }
