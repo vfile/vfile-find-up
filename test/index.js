@@ -2,8 +2,9 @@
  * @typedef {import('vfile').VFile} VFile
  */
 
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
+import process from 'node:process'
 import test from 'tape'
 import {findUp, findUpOne, INCLUDE, BREAK} from '../index.js'
 
