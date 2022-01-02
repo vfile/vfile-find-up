@@ -4,8 +4,9 @@
  * @typedef {(file: VFile) => number|boolean|void} Assert
  */
 
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
+import process from 'node:process'
 import {toVFile} from 'to-vfile'
 
 export const INCLUDE = 1
