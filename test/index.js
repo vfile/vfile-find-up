@@ -8,13 +8,13 @@ import process from 'node:process'
 import test from 'tape'
 import {findUp, findUpOne, INCLUDE, BREAK} from '../index.js'
 
-var join = path.join
+const join = path.join
 /**
- * @type {(...args: string[]) => string}
+ * @type {(...args: Array<string>) => string}
  */
-var base = join.bind(null, process.cwd())
+const base = join.bind(null, process.cwd())
 
-var deepest = base('test', 'fixture', 'foo', 'bar', 'baz')
+const deepest = base('test', 'fixture', 'foo', 'bar', 'baz')
 
 try {
   fs.unlinkSync('package-lock.json')
@@ -231,7 +231,7 @@ test('findUp', function (t) {
 
   findUp(
     function (file) {
-      var mask = 0
+      let mask = 0
 
       if (file.stem.charAt(0) === 'q') {
         mask = INCLUDE
@@ -262,8 +262,8 @@ test('findUp', function (t) {
  * Utility to ensure no outbound files are included, and to strip the CWD from
  * paths.
  *
- * @param {Array.<VFile>|VFile|null} files
- * @returns {Array.<string>}
+ * @param {Array<VFile>|VFile|null} files
+ * @returns {Array<string>}
  */
 function check(files) {
   if (files === null) {

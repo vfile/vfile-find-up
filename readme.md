@@ -53,13 +53,13 @@ Note: Virtual Files are not read (their `contents` is not populated).
 ##### Sigantures
 
 *   `(tests: Test, path?: string, callback: Callback): void`
-*   `(tests: Test, path?: string): Promise.<Array.<VFile>>`
+*   `(tests: Test, path?: string): Promise<Array<VFile>>`
 
 ##### Parameters
 
 ###### `tests`
 
-Things to search for (`string`, `Function`, or `Array.<tests>`).
+Things to search for (`string`, `Function`, or `Array<tests>`).
 
 If a `string` is passed in, the `basename` or `extname` of files must match it
 for them to be included.

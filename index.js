@@ -1,7 +1,20 @@
 /**
  * @typedef {import('vfile').VFile} VFile
- * @typedef {string|Assert|Array.<string|Assert>} Test
- * @typedef {(file: VFile) => number|boolean|void} Assert
+ * @typedef {string|Assert|Array<string|Assert>} Test
+ *
+ * @callback Assert
+ * @param {VFile} file
+ * @returns {number|boolean|void}
+ *
+ * @callback Callback
+ * @param {Error|null} error
+ * @param {Array<VFile>} files
+ * @returns {void}
+ *
+ * @callback CallbackOne
+ * @param {Error|null} error
+ * @param {VFile} files
+ * @returns {void}
  */
 
 import fs from 'node:fs'
@@ -15,9 +28,9 @@ export const BREAK = 4
 export const findUp =
   /**
    * @type {{
-   *   (test: Test, cwd: string, callback: (error: Error|null, files: Array.<VFile>) => void): void
-   *   (test: Test, callback: (error: Error|null, files: Array.<VFile>) => void): void
-   *   (test: Test, cwd?: string): Promise.<Array.<VFile>>
+   *   (test: Test, cwd: string, callback: Callback): void
+   *   (test: Test, callback: Callback): void
+   *   (test: Test, cwd?: string): Promise<Array<VFile>>
    * }}
    */
   (
@@ -26,7 +39,7 @@ export const findUp =
      *
      * @param {Test} test
      * @param {string} cwd
-     * @param {(error: Error|null, files: Array.<VFile>) => void} callback
+     * @param {Callback} callback
      * @returns {unknown}
      */
     function (test, cwd, callback) {
@@ -37,9 +50,9 @@ export const findUp =
 export const findUpOne =
   /**
    * @type {{
-   *   (test: Test, cwd: string, callback: (error: Error|null, file?: VFile) => void): void
-   *   (test: Test, callback: (error: Error|null, file?: VFile) => void): void
-   *   (test: Test, cwd?: string): Promise.<VFile>
+   *   (test: Test, cwd: string, callback: CallbackOne): void
+   *   (test: Test, callback: CallbackOne): void
+   *   (test: Test, cwd?: string): Promise<VFile>
    * }}
    */
   (
@@ -48,7 +61,7 @@ export const findUpOne =
      *
      * @param {Test} test
      * @param {string} cwd
-     * @param {(error: Error|null, file?: VFile) => void} callback
+     * @param {CallbackOne} callback
      * @returns {unknown}
      */
     function (test, cwd, callback) {
@@ -60,22 +73,19 @@ export const findUpOne =
  * Find applicable files.
  *
  * @param {Test} test
- * @param {string|((error: Error|null, result?: VFile|Array.<VFile>) => void)} cwd
- * @param {null|undefined|((error: Error|null, result?: VFile|Array.<VFile>) => void)} cb
+ * @param {string|((error: Error|null, result?: VFile|Array<VFile>) => void)} cwd
+ * @param {null|undefined|((error: Error|null, result?: VFile|Array<VFile>) => void)} cb
  * @param {boolean} [one]
- * @returns {Promise.<VFile|Array.<VFile>>}
+ * @returns {Promise<VFile|Array<VFile>>}
  */
 function find(test, cwd, cb, one) {
-  /** @type {Array.<VFile>} */
-  var results = []
+  const assert = convert(test)
+  /** @type {Array<VFile>} */
+  const results = []
   /** @type {string} */
-  var current
-  /** @type {Assert} */
-  var assert = convert(test)
-  /** @type {string} */
-  var base
-  /** @type {(error: Error|null, result?: VFile|Array.<VFile>) => void} */
-  var callback
+  let base
+  /** @type {(error: Error|null, result?: VFile|Array<VFile>) => void} */
+  let callback
 
   if (typeof cwd === 'string') {
     base = cwd
@@ -85,7 +95,7 @@ function find(test, cwd, cb, one) {
     callback = cwd
   }
 
-  current = base ? path.resolve(base) : process.cwd()
+  let current = base ? path.resolve(base) : process.cwd()
 
   if (!callback) {
     return new Promise(executor)
@@ -94,14 +104,14 @@ function find(test, cwd, cb, one) {
   executor(resolve)
 
   /**
-   * @param {VFile|Array.<VFile>} result
+   * @param {VFile|Array<VFile>} result
    */
   function resolve(result) {
     callback(null, result)
   }
 
   /**
-   * @param {(x: VFile|Array.<VFile>) => void} resolve
+   * @param {(x: VFile|Array<VFile>) => void} resolve
    */
   function executor(resolve) {
     once(current)
@@ -113,8 +123,8 @@ function find(test, cwd, cb, one) {
      * @returns {boolean}
      */
     function handle(filePath) {
-      var file = toVFile(filePath)
-      var result = Number(assert(file))
+      const file = toVFile(filePath)
+      const result = Number(assert(file))
 
       if ((result & INCLUDE) === INCLUDE) {
         if (one) {
@@ -143,9 +153,9 @@ function find(test, cwd, cb, one) {
       }
 
       fs.readdir(current, function (error, entries) {
-        var index = -1
+        let index = -1
         /** @type {string} */
-        var entry
+        let entry
 
         if (error) {
           entries = []
@@ -193,13 +203,13 @@ function convert(test) {
 /**
  * Check multiple tests.
  *
- * @param {Array.<string|Assert>} test
+ * @param {Array<string|Assert>} test
  * @returns {Assert}
  */
 function multiple(test) {
-  /** @type {Array.<Assert>} */
-  var tests = []
-  var index = -1
+  /** @type {Array<Assert>} */
+  const tests = []
+  let index = -1
 
   while (++index < test.length) {
     tests[index] = convert(test[index])
@@ -209,9 +219,9 @@ function multiple(test) {
 
   /** @type {Assert} */
   function check(file) {
-    var index = -1
+    let index = -1
     /** @type {number|boolean|void} */
-    var result
+    let result
 
     while (++index < tests.length) {
       result = tests[index](file)

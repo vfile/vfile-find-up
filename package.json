@@ -68,8 +68,6 @@
   "xo": {
     "prettier": true,
     "rules": {
-      "no-var": "off",
-      "prefer-arrow-callback": "off",
       "no-bitwise": "off"
     }
   },
