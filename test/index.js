@@ -171,7 +171,7 @@ test('findUp', function (t) {
 
   findUp(
     function (file) {
-      return file.stem.charAt(0) === 'q'
+      return file.stem !== undefined && file.stem.charAt(0) === 'q'
     },
     deepest,
     function (_, files) {
@@ -233,7 +233,7 @@ test('findUp', function (t) {
     function (file) {
       let mask = 0
 
-      if (file.stem.charAt(0) === 'q') {
+      if (file.stem && file.stem.charAt(0) === 'q') {
         mask = INCLUDE
       }
 
@@ -263,7 +263,7 @@ test('findUp', function (t) {
  * paths.
  *
  * @param {Array<VFile>|VFile|null} files
- * @returns {Array<string>}
+ * @returns {Array<string | null>}
  */
 function check(files) {
   if (files === null) {

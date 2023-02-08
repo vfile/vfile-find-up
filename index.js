@@ -43,6 +43,7 @@ export const findUp =
      * @returns {unknown}
      */
     function (test, cwd, callback) {
+      // @ts-expect-error: To do: fix `callback`.
       return find(test, cwd, callback)
     }
   )
@@ -65,6 +66,7 @@ export const findUpOne =
      * @returns {unknown}
      */
     function (test, cwd, callback) {
+      // @ts-expect-error: To do: fix `callback`.
       return find(test, cwd, callback, true)
     }
   )
@@ -76,15 +78,15 @@ export const findUpOne =
  * @param {string|((error: Error|null, result?: VFile|Array<VFile>) => void)} cwd
  * @param {null|undefined|((error: Error|null, result?: VFile|Array<VFile>) => void)} cb
  * @param {boolean} [one]
- * @returns {Promise<VFile|Array<VFile>>}
+ * @returns {Promise<VFile|Array<VFile> | null> | undefined}
  */
 function find(test, cwd, cb, one) {
   const assert = convert(test)
   /** @type {Array<VFile>} */
   const results = []
-  /** @type {string} */
+  /** @type {string | null} */
   let base
-  /** @type {(error: Error|null, result?: VFile|Array<VFile>) => void} */
+  /** @type {((error: Error|null, result?: VFile|Array<VFile>) => void) | null | undefined} */
   let callback
 
   if (typeof cwd === 'string') {
@@ -104,14 +106,15 @@ function find(test, cwd, cb, one) {
   executor(resolve)
 
   /**
-   * @param {VFile|Array<VFile>} result
+   * @param {VFile|Array<VFile> | null} result
    */
   function resolve(result) {
+    // @ts-expect-error: `callback` is defined if we’re here.
     callback(null, result)
   }
 
   /**
-   * @param {(x: VFile|Array<VFile>) => void} resolve
+   * @param {(x: VFile|Array<VFile> | null) => void} resolve
    */
   function executor(resolve) {
     once(current)
@@ -120,7 +123,7 @@ function find(test, cwd, cb, one) {
      * Test a file and check what should be done with the resulting file.
      *
      * @param {string} filePath
-     * @returns {boolean}
+     * @returns {boolean | undefined}
      */
     function handle(filePath) {
       const file = toVFile(filePath)
