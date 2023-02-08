@@ -3,17 +3,21 @@
  */
 
 import assert from 'node:assert/strict'
-import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import test from 'node:test'
 import {findUp, findUpOne, INCLUDE, BREAK} from '../index.js'
+import * as mod from '../index.js'
 
 const deepest = path.join(process.cwd(), 'test', 'fixture', 'foo', 'bar', 'baz')
 
-try {
-  fs.unlinkSync('package-lock.json')
-} catch {}
+test('core', () => {
+  assert.deepEqual(
+    Object.keys(mod).sort(),
+    ['BREAK', 'INCLUDE', 'findUp', 'findUpOne'],
+    'should expose the public api'
+  )
+})
 
 test('findUpOne', async function () {
   await new Promise(function (ok) {
