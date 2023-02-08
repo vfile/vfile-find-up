@@ -2,260 +2,337 @@
  * @typedef {import('vfile').VFile} VFile
  */
 
+import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import test from 'tape'
+import test from 'node:test'
 import {findUp, findUpOne, INCLUDE, BREAK} from '../index.js'
 
-const join = path.join
-/**
- * @type {(...args: Array<string>) => string}
- */
-const base = join.bind(null, process.cwd())
-
-const deepest = base('test', 'fixture', 'foo', 'bar', 'baz')
+const deepest = path.join(process.cwd(), 'test', 'fixture', 'foo', 'bar', 'baz')
 
 try {
   fs.unlinkSync('package-lock.json')
 } catch {}
 
-test('findUpOne', function (t) {
-  t.plan(13)
-
-  findUpOne('package.json', function (_, file) {
-    t.deepEqual(
-      check(file),
-      ['package.json'],
-      '`directory` should default to CWD'
-    )
-  })
-
-  findUpOne('package.json').then((file) => {
-    t.deepEqual(check(file), ['package.json'], 'should support promises')
-  })
-
-  findUpOne('package.json', deepest, function (_, file) {
-    t.deepEqual(check(file), ['package.json'], 'should search for one file')
-  })
-
-  findUpOne('package.json', join(deepest, 'qux', 'quux'), function (_, file) {
-    t.deepEqual(
-      check(file),
-      ['package.json'],
-      'should ignore unreadable directories'
-    )
-  })
-
-  findUpOne('.json', deepest, function (_, file) {
-    t.deepEqual(
-      check(file),
-      [join('test', 'fixture', 'foo.json')],
-      'should search for an extension'
-    )
-  })
-
-  findUpOne(
-    function (file) {
-      return file.stem === 'quux'
-    },
-    deepest,
-    function (_, file) {
-      t.deepEqual(
+test('findUpOne', async function () {
+  await new Promise(function (ok) {
+    findUpOne('package.json', function (_, file) {
+      assert.deepEqual(
         check(file),
-        [join('test', 'fixture', 'foo', 'bar', 'quux.md')],
-        'should search for a function'
+        ['package.json'],
+        '`directory` should default to CWD'
       )
-    }
+      ok(undefined)
+    })
+  })
+
+  assert.deepEqual(
+    check(await findUpOne('package.json')),
+    ['package.json'],
+    'should support promises'
   )
 
-  findUpOne('.test', deepest, function (_, file) {
-    t.deepEqual(
-      check(file),
-      [join('test', 'fixture', '.test')],
-      'should search for a hidden file'
-    )
-  })
-
-  findUpOne('.md', deepest, function (_, file) {
-    t.deepEqual(
-      check(file),
-      [join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md')],
-      'should search for the closest file'
-    )
-  })
-
-  findUpOne(['.md', '.json'], deepest, function (_, file) {
-    t.deepEqual(
-      check(file),
-      [join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md')],
-      'should search for multiple tests'
-    )
-  })
-
-  findUpOne('!', deepest, function (_, file) {
-    t.equal(file, null, 'should pass `null` when not found #1')
-  })
-
-  findUpOne(['!', '?'], deepest, function (_, file) {
-    t.equal(file, null, 'should pass `null` when not found #2')
-  })
-
-  findUpOne(
-    function (file) {
-      if (file.stem === 'foo') {
-        return INCLUDE
-      }
-    },
-    deepest,
-    function (_, file) {
-      t.deepEqual(
+  await new Promise(function (ok) {
+    findUpOne('package.json', deepest, function (_, file) {
+      assert.deepEqual(
         check(file),
-        [join('test', 'fixture', 'foo')],
-        'should support `INCLUDE`'
+        ['package.json'],
+        'should search for one file'
       )
-    }
-  )
+      ok(undefined)
+    })
+  })
 
-  findUpOne(
-    function (file) {
-      if (file.stem === 'foo') {
-        return BREAK
+  await new Promise(function (ok) {
+    findUpOne(
+      'package.json',
+      path.join(deepest, 'qux', 'quux'),
+      function (_, file) {
+        assert.deepEqual(
+          check(file),
+          ['package.json'],
+          'should ignore unreadable directories'
+        )
+        ok(undefined)
       }
-    },
-    deepest,
-    function (_, file) {
-      t.deepEqual(check(file), [null], 'should support `BREAK`')
-    }
-  )
+    )
+  })
+
+  await new Promise(function (ok) {
+    findUpOne('.json', deepest, function (_, file) {
+      assert.deepEqual(
+        check(file),
+        [path.join('test', 'fixture', 'foo.json')],
+        'should search for an extension'
+      )
+      ok(undefined)
+    })
+  })
+
+  await new Promise(function (ok) {
+    findUpOne(
+      function (file) {
+        return file.stem === 'quux'
+      },
+      deepest,
+      function (_, file) {
+        assert.deepEqual(
+          check(file),
+          [path.join('test', 'fixture', 'foo', 'bar', 'quux.md')],
+          'should search for a function'
+        )
+        ok(undefined)
+      }
+    )
+  })
+
+  await new Promise(function (ok) {
+    findUpOne('.test', deepest, function (_, file) {
+      assert.deepEqual(
+        check(file),
+        [path.join('test', 'fixture', '.test')],
+        'should search for a hidden file'
+      )
+      ok(undefined)
+    })
+  })
+
+  await new Promise(function (ok) {
+    findUpOne('.md', deepest, function (_, file) {
+      assert.deepEqual(
+        check(file),
+        [path.join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md')],
+        'should search for the closest file'
+      )
+      ok(undefined)
+    })
+  })
+
+  await new Promise(function (ok) {
+    findUpOne(['.md', '.json'], deepest, function (_, file) {
+      assert.deepEqual(
+        check(file),
+        [path.join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md')],
+        'should search for multiple tests'
+      )
+      ok(undefined)
+    })
+  })
+
+  await new Promise(function (ok) {
+    findUpOne('!', deepest, function (_, file) {
+      assert.equal(file, null, 'should pass `null` when not found #1')
+      ok(undefined)
+    })
+  })
+
+  await new Promise(function (ok) {
+    findUpOne(['!', '?'], deepest, function (_, file) {
+      assert.equal(file, null, 'should pass `null` when not found #2')
+      ok(undefined)
+    })
+  })
+
+  await new Promise(function (ok) {
+    findUpOne(
+      function (file) {
+        if (file.stem === 'foo') {
+          return INCLUDE
+        }
+      },
+      deepest,
+      function (_, file) {
+        assert.deepEqual(
+          check(file),
+          [path.join('test', 'fixture', 'foo')],
+          'should support `INCLUDE`'
+        )
+        ok(undefined)
+      }
+    )
+  })
+
+  await new Promise(function (ok) {
+    findUpOne(
+      function (file) {
+        if (file.stem === 'foo') {
+          return BREAK
+        }
+      },
+      deepest,
+      function (_, file) {
+        assert.deepEqual(check(file), [null], 'should support `BREAK`')
+        ok(undefined)
+      }
+    )
+  })
 })
 
-test('findUp', function (t) {
-  t.plan(11)
-
-  findUp('package.json', function (_, files) {
-    t.deepEqual(
-      check(files),
-      ['package.json'],
-      '`directory` should default to CWD'
-    )
-  })
-
-  findUp('package.json').then(function (files) {
-    t.deepEqual(check(files), ['package.json'], 'should support promises')
-  })
-
-  findUp('package.json', deepest, function (_, files) {
-    t.deepEqual(
-      check(files),
-      ['package.json'],
-      'should return files by name and extension'
-    )
-  })
-
-  findUp('package.json', join(deepest, 'qux', 'quux'), function (_, files) {
-    t.deepEqual(
-      check(files),
-      ['package.json'],
-      'should ignore unreadable directories'
-    )
-  })
-
-  findUp('.json', deepest, function (_, files) {
-    t.deepEqual(
-      check(files),
-      [join('test', 'fixture', 'foo.json'), 'package.json', 'tsconfig.json'],
-      'should return files by extension'
-    )
-  })
-
-  findUp(
-    function (file) {
-      return file.stem !== undefined && file.stem.charAt(0) === 'q'
-    },
-    deepest,
-    function (_, files) {
-      t.deepEqual(
+test('findUp', async function () {
+  await new Promise(function (ok) {
+    findUp('package.json', function (_, files) {
+      assert.deepEqual(
         check(files),
-        [
-          join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md'),
-          join('test', 'fixture', 'foo', 'bar', 'quux.md'),
-          join('test', 'fixture', 'foo', 'quuux.md'),
-          join('test', 'fixture', 'quuuux.md')
-        ],
-        'should return files by a test'
+        ['package.json'],
+        '`directory` should default to CWD'
       )
-    }
+      ok(undefined)
+    })
+  })
+
+  assert.deepEqual(
+    check(await findUp('package.json')),
+    ['package.json'],
+    'should support promises'
   )
 
-  findUp('.test', deepest, function (_, files) {
-    t.deepEqual(
-      check(files),
-      [join('test', 'fixture', '.test')],
-      'should return hidden files'
-    )
+  await new Promise(function (ok) {
+    findUp('package.json', deepest, function (_, files) {
+      assert.deepEqual(
+        check(files),
+        ['package.json'],
+        'should return files by name and extension'
+      )
+      ok(undefined)
+    })
   })
 
-  findUp(['.json', '.md'], deepest, function (_, files) {
-    t.deepEqual(
-      check(files),
-      [
-        join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md'),
-        join('test', 'fixture', 'foo', 'bar', 'quux.md'),
-        join('test', 'fixture', 'foo', 'quuux.md'),
-        join('test', 'fixture', 'foo.json'),
-        join('test', 'fixture', 'quuuux.md'),
-        'package.json',
-        'readme.md',
-        'tsconfig.json'
-      ],
-      'should search for multiple tests'
-    )
-  })
-
-  findUp('!', deepest, function (_, files) {
-    t.deepEqual(
-      check(files),
-      [],
-      'should return an empty array when not found #1'
-    )
-  })
-
-  findUp(['?', '!'], deepest, function (_, files) {
-    t.deepEqual(
-      check(files),
-      [],
-      'should return an empty array when not found #2'
-    )
-  })
-
-  findUp(
-    function (file) {
-      let mask = 0
-
-      if (file.stem && file.stem.charAt(0) === 'q') {
-        mask = INCLUDE
+  await new Promise(function (ok) {
+    findUp(
+      'package.json',
+      path.join(deepest, 'qux', 'quux'),
+      function (_, files) {
+        assert.deepEqual(
+          check(files),
+          ['package.json'],
+          'should ignore unreadable directories'
+        )
+        ok(undefined)
       }
+    )
+  })
 
-      if (file.stem === 'quuux') {
-        mask |= BREAK
-      }
-
-      return mask
-    },
-    deepest,
-    function (_, files) {
-      t.deepEqual(
+  await new Promise(function (ok) {
+    findUp('.json', deepest, function (_, files) {
+      assert.deepEqual(
         check(files),
         [
-          join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md'),
-          join('test', 'fixture', 'foo', 'bar', 'quux.md'),
-          join('test', 'fixture', 'foo', 'quuux.md')
+          path.join('test', 'fixture', 'foo.json'),
+          'package.json',
+          'tsconfig.json'
         ],
-        'should support `INCLUDE` and `BREAK`'
+        'should return files by extension'
       )
-    }
-  )
+      ok(undefined)
+    })
+  })
+
+  await new Promise(function (ok) {
+    findUp(
+      function (file) {
+        return file.stem !== undefined && file.stem.charAt(0) === 'q'
+      },
+      deepest,
+      function (_, files) {
+        assert.deepEqual(
+          check(files),
+          [
+            path.join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md'),
+            path.join('test', 'fixture', 'foo', 'bar', 'quux.md'),
+            path.join('test', 'fixture', 'foo', 'quuux.md'),
+            path.join('test', 'fixture', 'quuuux.md')
+          ],
+          'should return files by a test'
+        )
+        ok(undefined)
+      }
+    )
+  })
+
+  await new Promise(function (ok) {
+    findUp('.test', deepest, function (_, files) {
+      assert.deepEqual(
+        check(files),
+        [path.join('test', 'fixture', '.test')],
+        'should return hidden files'
+      )
+      ok(undefined)
+    })
+  })
+
+  await new Promise(function (ok) {
+    findUp(['.json', '.md'], deepest, function (_, files) {
+      assert.deepEqual(
+        check(files),
+        [
+          path.join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md'),
+          path.join('test', 'fixture', 'foo', 'bar', 'quux.md'),
+          path.join('test', 'fixture', 'foo', 'quuux.md'),
+          path.join('test', 'fixture', 'foo.json'),
+          path.join('test', 'fixture', 'quuuux.md'),
+          'package.json',
+          'readme.md',
+          'tsconfig.json'
+        ],
+        'should search for multiple tests'
+      )
+      ok(undefined)
+    })
+  })
+
+  await new Promise(function (ok) {
+    findUp('!', deepest, function (_, files) {
+      assert.deepEqual(
+        check(files),
+        [],
+        'should return an empty array when not found #1'
+      )
+      ok(undefined)
+    })
+  })
+
+  await new Promise(function (ok) {
+    findUp(['?', '!'], deepest, function (_, files) {
+      assert.deepEqual(
+        check(files),
+        [],
+        'should return an empty array when not found #2'
+      )
+      ok(undefined)
+    })
+  })
+
+  await new Promise(function (ok) {
+    findUp(
+      function (file) {
+        let mask = 0
+
+        if (file.stem && file.stem.charAt(0) === 'q') {
+          mask = INCLUDE
+        }
+
+        if (file.stem === 'quuux') {
+          mask |= BREAK
+        }
+
+        return mask
+      },
+      deepest,
+      function (_, files) {
+        assert.deepEqual(
+          check(files),
+          [
+            path.join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md'),
+            path.join('test', 'fixture', 'foo', 'bar', 'quux.md'),
+            path.join('test', 'fixture', 'foo', 'quuux.md')
+          ],
+          'should support `INCLUDE` and `BREAK`'
+        )
+        ok(undefined)
+      }
+    )
+  })
 })
 
 /**
@@ -272,6 +349,6 @@ function check(files) {
 
   return (Array.isArray(files) ? files : [files])
     .map((file) => file.path)
-    .filter((filePath) => filePath.indexOf(base()) === 0)
-    .map((filePath) => filePath.slice(base().length + 1))
+    .filter((filePath) => filePath.indexOf(path.join(process.cwd())) === 0)
+    .map((filePath) => filePath.slice(path.join(process.cwd()).length + 1))
 }
