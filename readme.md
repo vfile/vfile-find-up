@@ -17,8 +17,13 @@
 *   [Use](#use)
 *   [API](#api)
     *   [`findUp(tests[, path][, callback])`](#finduptests-path-callback)
-    *   [`findUpOne(tests[, path][, callback])`](#finduponetests-path-callback)
-    *   [`function assert(file)`](#function-assertfile)
+    *   [`findUpOne(test[, path][, callback])`](#finduponetest-path-callback)
+    *   [`BREAK`](#break)
+    *   [`INCLUDE`](#include)
+    *   [`Assert`](#assert)
+    *   [`Callback`](#callback)
+    *   [`CallbackOne`](#callbackone)
+    *   [`Test`](#test)
 *   [Types](#types)
 *   [Compatibility](#compatibility)
 *   [Contribute](#contribute)
@@ -37,7 +42,7 @@ folder, you can use [`vfile-find-down`][vfile-find-down].
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 12.20+, 14.14+, 16.0+, or 18.0+), install with [npm][]:
+In Node.js (version 14.14+ and 16.0+), install with [npm][]:
 
 ```sh
 npm install vfile-find-up
@@ -63,73 +68,143 @@ Yields:
 
 ## API
 
-This package exports the identifiers `findUp`, `findUpOne`, `INCLUDE`, and
-`BREAK`.
+This package exports the identifiers
+[`BREAK`][api-break],
+[`INCLUDE`][api-include],
+[`findUp`][api-find-up], and
+[`findUpOne`][api-find-up-one].
 There is no default export.
 
 ### `findUp(tests[, path][, callback])`
 
-Search for `tests` upwards.
-Calls callback with either an error or an array of files passing `tests`.
+Find files or folders upwards.
 
 > 👉 **Note**: files are not read (their `value` is not populated).
 
-##### Sigantures
+###### Signatures
 
-*   `(tests: Test, path?: string, callback: Callback): void`
-*   `(tests: Test, path?: string): Promise<Array<VFile>>`
+*   `(test[, path], callback) => void`
+*   `(test[, path]) => Promise<Array<VFile>>`
 
-##### Parameters
+###### Parameters
 
-###### `tests`
+*   `test` ([`Test`][api-test])
+    — things to search for
+*   `paths` (`string`, default: `process.cwd()`)
+    — place to search from
+*   `callback` ([`Callback`][api-callback], optional)
+    — callback called when done
 
-Things to search for (`string`, `Function`, or `Array<tests>`).
+###### Returns
 
-If a `string` is passed in, the `basename` or `extname` of files must match it
-for them to be included.
+Nothing when `callback` is given (`void`), otherwise a promise that resolves to
+files ([`Array<VFile>`][vfile]).
 
-If an array is passed in, any test must match a given file for it to be
-included.
+### `findUpOne(test[, path][, callback])`
 
-Otherwise, they must be [`Assert`][assert].
+Find the first file or folder upwards.
 
-###### `path`
+> 👉 **Note**: files are not read (their `value` is not populated).
 
-Place to searching from (`string`, default: `process.cwd()`).
+###### Signatures
 
-###### `callback`
+*   `(test[, path], callback) => void`
+*   `(test[, path]) => Promise<VFile>`
 
-Function called with all matching files (`function cb(error[, files])`).
+###### Parameters
 
-### `findUpOne(tests[, path][, callback])`
+*   `test` ([`Test`][api-test])
+    — things to search for
+*   `path` (`string`, default: `process.cwd()`)
+    — place to search from
+*   `callback` ([`CallbackOne`][api-callback-one], optional)
+    — callback called when done
 
-Like `findUp`, but either calls `callback` with the first found file or `null`,
-or returns a promise that resolved to a file or `null`.
+###### Returns
 
-### `function assert(file)`
+Nothing when `callback` is given (`void`), otherwise a promise that resolves to
+a file ([`VFile | null`][vfile]).
 
-Check whether a virtual file should be included.
-Called with a [vfile][].
+### `BREAK`
 
-##### Returns
+Stop searching (`number`).
 
-*   `true` or `INCLUDE` — include the file in the results
-*   `BREAK` — stop searching for files
-*   anything else is ignored: the file is not included
+### `INCLUDE`
 
-The different flags can be combined by using the pipe operator:
-`INCLUDE | BREAK`.
+Include this file (`number`).
+
+### `Assert`
+
+Handle a file (TypeScript type).
+
+###### Parameters
+
+*   `file` ([`VFile`][vfile])
+    — file to handle
+
+###### Returns
+
+How to handle this file (`boolean | number`, optional).
+
+`true` is treated as `INCLUDE`.
+
+### `Callback`
+
+Callback called when done (TypeScript type).
+
+###### Parameters
+
+*   `error` (`Error | null`)
+    — error; errors are currently never passed
+*   `files` ([`Array<VFile>`][vfile])
+    — files
+
+###### Returns
+
+Nothing (`void`).
+
+### `CallbackOne`
+
+Callback called when done finding one file (TypeScript type).
+
+###### Parameters
+
+*   `error` (`Error | null`)
+    — error; errors are currently never passed
+*   `file` ([`VFile | null`][vfile])
+    — file
+
+###### Returns
+
+Nothing (`void`).
+
+### `Test`
+
+Things to search for (TypeScript type).
+
+For strings, the `basename` or `extname` of files must match them.
+For arrays, any test in them must match.
+
+###### Type
+
+```ts
+type Test = Array<Assert | string> | Assert | string
+```
 
 ## Types
 
 This package is fully typed with [TypeScript][].
-It exports the additional types `Assert` and `Test`.
+It exports the additional types
+[`Assert`][api-assert],
+[`Callback`][api-callback],
+[`CallbackOne`][api-callback-one], and
+[`Test`][api-test].
 
 ## Compatibility
 
 Projects maintained by the unified collective are compatible with all maintained
 versions of Node.js.
-As of now, that is Node.js 12.20+, 14.14+, 16.0+, and 18.0+.
+As of now, that is Node.js 14.14+ and 16.0+.
 Our projects sometimes work with older versions, but this is not guaranteed.
 
 ## Contribute
@@ -192,4 +267,18 @@ abide by its terms.
 
 [vfile-find-down]: https://github.com/vfile/vfile-find-down
 
-[assert]: #function-assertfile
+[api-break]: #break
+
+[api-include]: #include
+
+[api-find-up]: #finduptests-path-callback
+
+[api-find-up-one]: #finduponetest-path-callback
+
+[api-assert]: #assert
+
+[api-callback]: #callback
+
+[api-callback-one]: #callbackone
+
+[api-test]: #test
