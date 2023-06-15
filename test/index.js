@@ -6,13 +6,13 @@ import assert from 'node:assert/strict'
 import path from 'node:path'
 import process from 'node:process'
 import test from 'node:test'
-import {findUp, findUpAll} from '../index.js'
+import {findUp, findUpAll} from 'vfile-find-up'
 
 const deepest = path.join(process.cwd(), 'test', 'fixture', 'foo', 'bar', 'baz')
 
 test('core', async function () {
   assert.deepEqual(
-    Object.keys(await import('../index.js')).sort(),
+    Object.keys(await import('vfile-find-up')).sort(),
     ['findUp', 'findUpAll'],
     'should expose the public api'
   )
