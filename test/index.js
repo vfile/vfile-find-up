@@ -6,21 +6,21 @@ import assert from 'node:assert/strict'
 import path from 'node:path'
 import process from 'node:process'
 import test from 'node:test'
-import {findUp, findUpOne, INCLUDE, BREAK} from '../index.js'
+import {findUp, findUpAll, INCLUDE, BREAK} from '../index.js'
 
 const deepest = path.join(process.cwd(), 'test', 'fixture', 'foo', 'bar', 'baz')
 
 test('core', async function () {
   assert.deepEqual(
     Object.keys(await import('../index.js')).sort(),
-    ['BREAK', 'INCLUDE', 'findUp', 'findUpOne'],
+    ['BREAK', 'INCLUDE', 'findUp', 'findUpAll'],
     'should expose the public api'
   )
 })
 
-test('findUpOne', async function () {
+test('findUp', async function () {
   await new Promise(function (ok) {
-    findUpOne('package.json', function (_, file) {
+    findUp('package.json', function (_, file) {
       assert.deepEqual(
         check(file),
         ['package.json'],
@@ -31,13 +31,13 @@ test('findUpOne', async function () {
   })
 
   assert.deepEqual(
-    check(await findUpOne('package.json')),
+    check(await findUp('package.json')),
     ['package.json'],
     'should support promises'
   )
 
   await new Promise(function (ok) {
-    findUpOne('package.json', deepest, function (_, file) {
+    findUp('package.json', deepest, function (_, file) {
       assert.deepEqual(
         check(file),
         ['package.json'],
@@ -48,7 +48,7 @@ test('findUpOne', async function () {
   })
 
   await new Promise(function (ok) {
-    findUpOne(
+    findUp(
       'package.json',
       path.join(deepest, 'qux', 'quux'),
       function (_, file) {
@@ -63,7 +63,7 @@ test('findUpOne', async function () {
   })
 
   await new Promise(function (ok) {
-    findUpOne('.json', deepest, function (_, file) {
+    findUp('.json', deepest, function (_, file) {
       assert.deepEqual(
         check(file),
         [path.join('test', 'fixture', 'foo.json')],
@@ -74,7 +74,7 @@ test('findUpOne', async function () {
   })
 
   await new Promise(function (ok) {
-    findUpOne(
+    findUp(
       function (file) {
         return file.stem === 'quux'
       },
@@ -91,7 +91,7 @@ test('findUpOne', async function () {
   })
 
   await new Promise(function (ok) {
-    findUpOne('.test', deepest, function (_, file) {
+    findUp('.test', deepest, function (_, file) {
       assert.deepEqual(
         check(file),
         [path.join('test', 'fixture', '.test')],
@@ -102,7 +102,7 @@ test('findUpOne', async function () {
   })
 
   await new Promise(function (ok) {
-    findUpOne('.md', deepest, function (_, file) {
+    findUp('.md', deepest, function (_, file) {
       assert.deepEqual(
         check(file),
         [path.join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md')],
@@ -113,7 +113,7 @@ test('findUpOne', async function () {
   })
 
   await new Promise(function (ok) {
-    findUpOne(['.md', '.json'], deepest, function (_, file) {
+    findUp(['.md', '.json'], deepest, function (_, file) {
       assert.deepEqual(
         check(file),
         [path.join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md')],
@@ -124,21 +124,21 @@ test('findUpOne', async function () {
   })
 
   await new Promise(function (ok) {
-    findUpOne('!', deepest, function (_, file) {
+    findUp('!', deepest, function (_, file) {
       assert.equal(file, undefined, 'should pass `undefined` when not found #1')
       ok(undefined)
     })
   })
 
   await new Promise(function (ok) {
-    findUpOne(['!', '?'], deepest, function (_, file) {
+    findUp(['!', '?'], deepest, function (_, file) {
       assert.equal(file, undefined, 'should pass `undefined` when not found #2')
       ok(undefined)
     })
   })
 
   await new Promise(function (ok) {
-    findUpOne(
+    findUp(
       function (file) {
         if (file.stem === 'foo') {
           return INCLUDE
@@ -157,7 +157,7 @@ test('findUpOne', async function () {
   })
 
   await new Promise(function (ok) {
-    findUpOne(
+    findUp(
       function (file) {
         if (file.stem === 'foo') {
           return BREAK
@@ -172,9 +172,9 @@ test('findUpOne', async function () {
   })
 })
 
-test('findUp', async function () {
+test('findUpAll', async function () {
   await new Promise(function (ok) {
-    findUp('package.json', function (_, files) {
+    findUpAll('package.json', function (_, files) {
       assert.deepEqual(
         check(files),
         ['package.json'],
@@ -185,13 +185,13 @@ test('findUp', async function () {
   })
 
   assert.deepEqual(
-    check(await findUp('package.json')),
+    check(await findUpAll('package.json')),
     ['package.json'],
     'should support promises'
   )
 
   await new Promise(function (ok) {
-    findUp('package.json', deepest, function (_, files) {
+    findUpAll('package.json', deepest, function (_, files) {
       assert.deepEqual(
         check(files),
         ['package.json'],
@@ -202,7 +202,7 @@ test('findUp', async function () {
   })
 
   await new Promise(function (ok) {
-    findUp(
+    findUpAll(
       'package.json',
       path.join(deepest, 'qux', 'quux'),
       function (_, files) {
@@ -217,7 +217,7 @@ test('findUp', async function () {
   })
 
   await new Promise(function (ok) {
-    findUp('.json', deepest, function (_, files) {
+    findUpAll('.json', deepest, function (_, files) {
       assert.deepEqual(
         check(files),
         [
@@ -232,7 +232,7 @@ test('findUp', async function () {
   })
 
   await new Promise(function (ok) {
-    findUp(
+    findUpAll(
       function (file) {
         return file.stem !== undefined && file.stem.charAt(0) === 'q'
       },
@@ -254,7 +254,7 @@ test('findUp', async function () {
   })
 
   await new Promise(function (ok) {
-    findUp('.test', deepest, function (_, files) {
+    findUpAll('.test', deepest, function (_, files) {
       assert.deepEqual(
         check(files),
         [path.join('test', 'fixture', '.test')],
@@ -265,7 +265,7 @@ test('findUp', async function () {
   })
 
   await new Promise(function (ok) {
-    findUp(['.json', '.md'], deepest, function (_, files) {
+    findUpAll(['.json', '.md'], deepest, function (_, files) {
       assert.deepEqual(
         check(files),
         [
@@ -285,7 +285,7 @@ test('findUp', async function () {
   })
 
   await new Promise(function (ok) {
-    findUp('!', deepest, function (_, files) {
+    findUpAll('!', deepest, function (_, files) {
       assert.deepEqual(
         check(files),
         [],
@@ -296,7 +296,7 @@ test('findUp', async function () {
   })
 
   await new Promise(function (ok) {
-    findUp(['?', '!'], deepest, function (_, files) {
+    findUpAll(['?', '!'], deepest, function (_, files) {
       assert.deepEqual(
         check(files),
         [],
@@ -307,7 +307,7 @@ test('findUp', async function () {
   })
 
   await new Promise(function (ok) {
-    findUp(
+    findUpAll(
       function (file) {
         let mask = 0
 

@@ -16,8 +16,8 @@
 *   [Install](#install)
 *   [Use](#use)
 *   [API](#api)
-    *   [`findUp(tests[, path][, callback])`](#finduptests-path-callback)
-    *   [`findUpOne(test[, path][, callback])`](#finduponetest-path-callback)
+    *   [`findUp(test[, path][, callback])`](#finduptest-path-callback)
+    *   [`findUpAll(test[, path][, callback])`](#findupalltest-path-callback)
     *   [`BREAK`](#break)
     *   [`INCLUDE`](#include)
     *   [`Assert`](#assert)
@@ -51,9 +51,9 @@ npm install vfile-find-up
 ## Use
 
 ```js
-import {findUp} from 'vfile-find-up'
+import {findUpAll} from 'vfile-find-up'
 
-console.log(await findUp('package.json'))
+console.log(await findUpAll('package.json'))
 ```
 
 Yields:
@@ -72,35 +72,10 @@ This package exports the identifiers
 [`BREAK`][api-break],
 [`INCLUDE`][api-include],
 [`findUp`][api-find-up], and
-[`findUpOne`][api-find-up-one].
+[`findUpAll`][api-find-up-all].
 There is no default export.
 
-### `findUp(tests[, path][, callback])`
-
-Find files or folders upwards.
-
-> 👉 **Note**: files are not read (their `value` is not populated).
-
-###### Signatures
-
-*   `(test[, path], callback) => undefined`
-*   `(test[, path]) => Promise<Array<VFile>>`
-
-###### Parameters
-
-*   `test` ([`Test`][api-test])
-    — things to search for
-*   `paths` (`string`, default: `process.cwd()`)
-    — place to search from
-*   `callback` ([`Callback`][api-callback], optional)
-    — callback called when done
-
-###### Returns
-
-Nothing when `callback` is given (`undefined`), otherwise a promise that
-resolves to files ([`Array<VFile>`][vfile]).
-
-### `findUpOne(test[, path][, callback])`
+### `findUp(test[, path][, callback])`
 
 Find the first file or folder upwards.
 
@@ -124,6 +99,31 @@ Find the first file or folder upwards.
 
 Nothing when `callback` is given (`undefined`), otherwise a promise that
 resolves to a file ([`VFile | undefined`][vfile]).
+
+### `findUpAll(test[, path][, callback])`
+
+Find files or folders upwards.
+
+> 👉 **Note**: files are not read (their `value` is not populated).
+
+###### Signatures
+
+*   `(test[, path], callback) => undefined`
+*   `(test[, path]) => Promise<Array<VFile>>`
+
+###### Parameters
+
+*   `test` ([`Test`][api-test])
+    — things to search for
+*   `paths` (`string`, default: `process.cwd()`)
+    — place to search from
+*   `callback` ([`Callback`][api-callback], optional)
+    — callback called when done
+
+###### Returns
+
+Nothing when `callback` is given (`undefined`), otherwise a promise that
+resolves to files ([`Array<VFile>`][vfile]).
 
 ### `BREAK`
 
@@ -271,9 +271,9 @@ abide by its terms.
 
 [api-include]: #include
 
-[api-find-up]: #finduptests-path-callback
+[api-find-up]: #finduptest-path-callback
 
-[api-find-up-one]: #finduponetest-path-callback
+[api-find-up-all]: #findupalltest-path-callback
 
 [api-assert]: #assert
 
