@@ -35,7 +35,6 @@
     "index.js"
   ],
   "dependencies": {
-    "to-vfile": "^7.0.0",
     "vfile": "^5.0.0"
   },
   "devDependencies": {

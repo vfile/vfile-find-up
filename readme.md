@@ -83,7 +83,7 @@ Find files or folders upwards.
 
 ###### Signatures
 
-*   `(test[, path], callback) => void`
+*   `(test[, path], callback) => undefined`
 *   `(test[, path]) => Promise<Array<VFile>>`
 
 ###### Parameters
@@ -97,8 +97,8 @@ Find files or folders upwards.
 
 ###### Returns
 
-Nothing when `callback` is given (`void`), otherwise a promise that resolves to
-files ([`Array<VFile>`][vfile]).
+Nothing when `callback` is given (`undefined`), otherwise a promise that
+resolves to files ([`Array<VFile>`][vfile]).
 
 ### `findUpOne(test[, path][, callback])`
 
@@ -108,7 +108,7 @@ Find the first file or folder upwards.
 
 ###### Signatures
 
-*   `(test[, path], callback) => void`
+*   `(test[, path], callback) => undefined`
 *   `(test[, path]) => Promise<VFile>`
 
 ###### Parameters
@@ -122,8 +122,8 @@ Find the first file or folder upwards.
 
 ###### Returns
 
-Nothing when `callback` is given (`void`), otherwise a promise that resolves to
-a file ([`VFile | null`][vfile]).
+Nothing when `callback` is given (`undefined`), otherwise a promise that
+resolves to a file ([`VFile | undefined`][vfile]).
 
 ### `BREAK`
 
@@ -154,14 +154,14 @@ Callback called when done (TypeScript type).
 
 ###### Parameters
 
-*   `error` (`Error | null`)
+*   `error` (`Error | undefined`)
     — error; errors are currently never passed
 *   `files` ([`Array<VFile>`][vfile])
     — files
 
 ###### Returns
 
-Nothing (`void`).
+Nothing (`undefined`).
 
 ### `CallbackOne`
 
@@ -169,14 +169,14 @@ Callback called when done finding one file (TypeScript type).
 
 ###### Parameters
 
-*   `error` (`Error | null`)
+*   `error` (`Error | undefined`)
     — error; errors are currently never passed
-*   `file` ([`VFile | null`][vfile])
+*   `file` ([`VFile | undefined`][vfile])
     — file
 
 ###### Returns
 
-Nothing (`void`).
+Nothing (`undefined`).
 
 ### `Test`
 

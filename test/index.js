@@ -7,13 +7,12 @@ import path from 'node:path'
 import process from 'node:process'
 import test from 'node:test'
 import {findUp, findUpOne, INCLUDE, BREAK} from '../index.js'
-import * as mod from '../index.js'
 
 const deepest = path.join(process.cwd(), 'test', 'fixture', 'foo', 'bar', 'baz')
 
-test('core', () => {
+test('core', async function () {
   assert.deepEqual(
-    Object.keys(mod).sort(),
+    Object.keys(await import('../index.js')).sort(),
     ['BREAK', 'INCLUDE', 'findUp', 'findUpOne'],
     'should expose the public api'
   )
@@ -126,14 +125,14 @@ test('findUpOne', async function () {
 
   await new Promise(function (ok) {
     findUpOne('!', deepest, function (_, file) {
-      assert.equal(file, null, 'should pass `null` when not found #1')
+      assert.equal(file, undefined, 'should pass `undefined` when not found #1')
       ok(undefined)
     })
   })
 
   await new Promise(function (ok) {
     findUpOne(['!', '?'], deepest, function (_, file) {
-      assert.equal(file, null, 'should pass `null` when not found #2')
+      assert.equal(file, undefined, 'should pass `undefined` when not found #2')
       ok(undefined)
     })
   })
@@ -166,7 +165,7 @@ test('findUpOne', async function () {
       },
       deepest,
       function (_, file) {
-        assert.deepEqual(check(file), [null], 'should support `BREAK`')
+        assert.deepEqual(check(file), [undefined], 'should support `BREAK`')
         ok(undefined)
       }
     )
@@ -343,16 +342,22 @@ test('findUp', async function () {
  * Utility to ensure no outbound files are included, and to strip the CWD from
  * paths.
  *
- * @param {Array<VFile>|VFile|null} files
- * @returns {Array<string | null>}
+ * @param {Array<VFile> | VFile | undefined} files
+ * @returns {Array<string | undefined>}
  */
 function check(files) {
-  if (files === null) {
-    return [null]
+  if (files === undefined) {
+    return [undefined]
   }
 
   return (Array.isArray(files) ? files : [files])
-    .map((file) => file.path)
-    .filter((filePath) => filePath.indexOf(path.join(process.cwd())) === 0)
-    .map((filePath) => filePath.slice(path.join(process.cwd()).length + 1))
+    .map(function (file) {
+      return file.path
+    })
+    .filter(function (filePath) {
+      return filePath.indexOf(path.join(process.cwd())) === 0
+    })
+    .map(function (filePath) {
+      return filePath.slice(path.join(process.cwd()).length + 1)
+    })
 }
