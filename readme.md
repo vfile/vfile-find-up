@@ -41,7 +41,7 @@ folder, you can use [`vfile-find-down`][vfile-find-down].
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 14.14+ and 16.0+), install with [npm][]:
+In Node.js (version 16+), install with [npm][]:
 
 ```sh
 npm install vfile-find-up
@@ -50,19 +50,20 @@ npm install vfile-find-up
 ## Use
 
 ```js
-import {findUpAll} from 'vfile-find-up'
+import {findUp} from 'vfile-find-up'
 
-console.log(await findUpAll('package.json'))
+console.log(await findUp('package.json'))
 ```
 
 Yields:
 
 ```js
-[ VFile {
+VFile {
+  cwd: '/Users/tilde/Projects/oss/vfile-find-up',
   data: {},
-  messages: [],
-  history: [ '/Users/tilde/projects/oss/vfile-find-up/package.json' ],
-  cwd: '/Users/tilde/projects/oss/vfile-find-up' } ]
+  history: [ '/Users/tilde/Projects/oss/vfile-find-up/package.json' ],
+  messages: []
+}
 ```
 
 ## API
@@ -76,6 +77,7 @@ There is no default export.
 Find the first file or folder upwards.
 
 > 👉 **Note**: files are not read (their `value` is not populated).
+> use [`to-vfile`][to-vfile] for that.
 
 ###### Signatures
 
@@ -101,6 +103,7 @@ resolves to a file ([`VFile | undefined`][vfile]).
 Find files or folders upwards.
 
 > 👉 **Note**: files are not read (their `value` is not populated).
+> use [`to-vfile`][to-vfile] for that.
 
 ###### Signatures
 
@@ -200,10 +203,13 @@ It exports the additional types
 
 ## Compatibility
 
-Projects maintained by the unified collective are compatible with all maintained
+Projects maintained by the unified collective are compatible with maintained
 versions of Node.js.
-As of now, that is Node.js 14.14+ and 16.0+.
-Our projects sometimes work with older versions, but this is not guaranteed.
+
+When we cut a new major release, we drop support for unmaintained versions of
+Node.
+This means we try to keep the current release line, `vfile-find-up@^6`,
+compatible with Node.js 12.
 
 ## Contribute
 
@@ -262,6 +268,8 @@ abide by its terms.
 [author]: https://wooorm.com
 
 [vfile]: https://github.com/vfile/vfile
+
+[to-vfile]: https://github.com/vfile/to-vfile
 
 [vfile-find-down]: https://github.com/vfile/vfile-find-down
 
