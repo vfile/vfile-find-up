@@ -18,11 +18,10 @@
 *   [API](#api)
     *   [`findUp(test[, path][, callback])`](#finduptest-path-callback)
     *   [`findUpAll(test[, path][, callback])`](#findupalltest-path-callback)
-    *   [`BREAK`](#break)
-    *   [`INCLUDE`](#include)
     *   [`Assert`](#assert)
     *   [`Callback`](#callback)
-    *   [`CallbackOne`](#callbackone)
+    *   [`CallbackAll`](#callbackall)
+    *   [`Result`](#result)
     *   [`Test`](#test)
 *   [Types](#types)
 *   [Compatibility](#compatibility)
@@ -68,10 +67,7 @@ Yields:
 
 ## API
 
-This package exports the identifiers
-[`BREAK`][api-break],
-[`INCLUDE`][api-include],
-[`findUp`][api-find-up], and
+This package exports the identifiers [`findUp`][api-find-up] and
 [`findUpAll`][api-find-up-all].
 There is no default export.
 
@@ -92,7 +88,7 @@ Find the first file or folder upwards.
     — things to search for
 *   `path` (`string`, default: `process.cwd()`)
     — place to search from
-*   `callback` ([`CallbackOne`][api-callback-one], optional)
+*   `callback` ([`Callback`][api-callback], optional)
     — callback called when done
 
 ###### Returns
@@ -117,21 +113,13 @@ Find files or folders upwards.
     — things to search for
 *   `paths` (`string`, default: `process.cwd()`)
     — place to search from
-*   `callback` ([`Callback`][api-callback], optional)
+*   `callback` ([`CallbackAll`][api-callback-all], optional)
     — callback called when done
 
 ###### Returns
 
 Nothing when `callback` is given (`undefined`), otherwise a promise that
 resolves to files ([`Array<VFile>`][vfile]).
-
-### `BREAK`
-
-Stop searching (`number`).
-
-### `INCLUDE`
-
-Include this file (`number`).
 
 ### `Assert`
 
@@ -144,11 +132,24 @@ Handle a file (TypeScript type).
 
 ###### Returns
 
-How to handle this file (`boolean | number`, optional).
-
-`true` is treated as `INCLUDE`.
+How to handle this file ([`Result`][api-result], optional).
 
 ### `Callback`
+
+Callback called when done finding one file (TypeScript type).
+
+###### Parameters
+
+*   `error` (`Error | undefined`)
+    — error; errors are currently never passed
+*   `file` ([`VFile | undefined`][vfile])
+    — file
+
+###### Returns
+
+Nothing (`undefined`).
+
+### `CallbackAll`
 
 Callback called when done (TypeScript type).
 
@@ -163,20 +164,16 @@ Callback called when done (TypeScript type).
 
 Nothing (`undefined`).
 
-### `CallbackOne`
+### `Result`
 
-Callback called when done finding one file (TypeScript type).
+What to do when collecting a file or folder (TypeScript type).
 
-###### Parameters
+###### Fields
 
-*   `error` (`Error | undefined`)
-    — error; errors are currently never passed
-*   `file` ([`VFile | undefined`][vfile])
-    — file
-
-###### Returns
-
-Nothing (`undefined`).
+*   `break` (`boolean`, default: `false`)
+    — stop searching after this file or folder
+*   `include` (`boolean`, default: `false`)
+    — include this file or folder
 
 ### `Test`
 
@@ -197,7 +194,8 @@ This package is fully typed with [TypeScript][].
 It exports the additional types
 [`Assert`][api-assert],
 [`Callback`][api-callback],
-[`CallbackOne`][api-callback-one], and
+[`CallbackAll`][api-callback-all],
+[`Result`][api-result], and
 [`Test`][api-test].
 
 ## Compatibility
@@ -267,10 +265,6 @@ abide by its terms.
 
 [vfile-find-down]: https://github.com/vfile/vfile-find-down
 
-[api-break]: #break
-
-[api-include]: #include
-
 [api-find-up]: #finduptest-path-callback
 
 [api-find-up-all]: #findupalltest-path-callback
@@ -279,6 +273,8 @@ abide by its terms.
 
 [api-callback]: #callback
 
-[api-callback-one]: #callbackone
+[api-callback-all]: #callbackall
+
+[api-result]: #result
 
 [api-test]: #test

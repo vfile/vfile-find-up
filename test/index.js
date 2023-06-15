@@ -6,14 +6,14 @@ import assert from 'node:assert/strict'
 import path from 'node:path'
 import process from 'node:process'
 import test from 'node:test'
-import {findUp, findUpAll, INCLUDE, BREAK} from '../index.js'
+import {findUp, findUpAll} from '../index.js'
 
 const deepest = path.join(process.cwd(), 'test', 'fixture', 'foo', 'bar', 'baz')
 
 test('core', async function () {
   assert.deepEqual(
     Object.keys(await import('../index.js')).sort(),
-    ['BREAK', 'INCLUDE', 'findUp', 'findUpAll'],
+    ['findUp', 'findUpAll'],
     'should expose the public api'
   )
 })
@@ -76,7 +76,7 @@ test('findUp', async function () {
   await new Promise(function (ok) {
     findUp(
       function (file) {
-        return file.stem === 'quux'
+        return {include: file.stem === 'quux'}
       },
       deepest,
       function (_, file) {
@@ -140,9 +140,7 @@ test('findUp', async function () {
   await new Promise(function (ok) {
     findUp(
       function (file) {
-        if (file.stem === 'foo') {
-          return INCLUDE
-        }
+        return {include: file.stem === 'foo'}
       },
       deepest,
       function (_, file) {
@@ -159,9 +157,7 @@ test('findUp', async function () {
   await new Promise(function (ok) {
     findUp(
       function (file) {
-        if (file.stem === 'foo') {
-          return BREAK
-        }
+        return {break: file.stem === 'foo'}
       },
       deepest,
       function (_, file) {
@@ -234,7 +230,7 @@ test('findUpAll', async function () {
   await new Promise(function (ok) {
     findUpAll(
       function (file) {
-        return file.stem !== undefined && file.stem.charAt(0) === 'q'
+        return {include: file.stem !== undefined && file.stem.charAt(0) === 'q'}
       },
       deepest,
       function (_, files) {
@@ -309,17 +305,10 @@ test('findUpAll', async function () {
   await new Promise(function (ok) {
     findUpAll(
       function (file) {
-        let mask = 0
-
-        if (file.stem && file.stem.charAt(0) === 'q') {
-          mask = INCLUDE
+        return {
+          include: file.stem ? file.stem.charAt(0) === 'q' : false,
+          break: file.stem === 'quuux'
         }
-
-        if (file.stem === 'quuux') {
-          mask |= BREAK
-        }
-
-        return mask
       },
       deepest,
       function (_, files) {
