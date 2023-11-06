@@ -166,6 +166,28 @@ test('findUp', async function () {
       }
     )
   })
+
+  await new Promise(function (ok) {
+    findUp(
+      function (file) {
+        return {
+          include: file.extname === '.md',
+          break: file.dirname
+            ? path.basename(file.dirname) === 'fixture'
+            : false
+        }
+      },
+      new URL('fixture/foo/bar/baz', import.meta.url),
+      function (_, file) {
+        assert.deepEqual(
+          check(file),
+          [path.join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md')],
+          'should support urls'
+        )
+        ok(undefined)
+      }
+    )
+  })
 })
 
 test('findUpAll', async function () {
@@ -320,6 +342,31 @@ test('findUpAll', async function () {
             path.join('test', 'fixture', 'foo', 'quuux.md')
           ],
           'should support `INCLUDE` and `BREAK`'
+        )
+        ok(undefined)
+      }
+    )
+  })
+
+  await new Promise(function (ok) {
+    findUpAll(
+      function (file) {
+        return {
+          include: file.extname === '.md',
+          break: file.dirname
+            ? path.basename(file.dirname) === 'fixture'
+            : false
+        }
+      },
+      new URL('fixture/foo/bar/baz', import.meta.url),
+      function (_, files) {
+        assert.deepEqual(
+          check(files),
+          [
+            path.join('test', 'fixture', 'foo', 'bar', 'baz', 'qux.md'),
+            path.join('test', 'fixture', 'foo', 'bar', 'quux.md')
+          ],
+          'should support urls'
         )
         ok(undefined)
       }

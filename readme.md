@@ -88,7 +88,7 @@ Find the first file or folder upwards.
 
 *   `test` ([`Test`][api-test])
     — things to search for
-*   `path` (`string`, default: `process.cwd()`)
+*   `path` (`URL` or `string`, default: `process.cwd()`)
     — place to search from
 *   `callback` ([`Callback`][api-callback], optional)
     — callback called when done
@@ -114,7 +114,7 @@ Find files or folders upwards.
 
 *   `test` ([`Test`][api-test])
     — things to search for
-*   `paths` (`string`, default: `process.cwd()`)
+*   `paths` (`URL` or `string`, default: `process.cwd()`)
     — place to search from
 *   `callback` ([`CallbackAll`][api-callback-all], optional)
     — callback called when done
