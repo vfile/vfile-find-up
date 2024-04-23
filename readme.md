@@ -11,22 +11,22 @@
 
 ## Contents
 
-*   [What is this?](#what-is-this)
-*   [When should I use this?](#when-should-i-use-this)
-*   [Install](#install)
-*   [Use](#use)
-*   [API](#api)
-    *   [`findUp(test[, path][, callback])`](#finduptest-path-callback)
-    *   [`findUpAll(test[, path][, callback])`](#findupalltest-path-callback)
-    *   [`Assert`](#assert)
-    *   [`Callback`](#callback)
-    *   [`CallbackAll`](#callbackall)
-    *   [`Result`](#result)
-    *   [`Test`](#test)
-*   [Types](#types)
-*   [Compatibility](#compatibility)
-*   [Contribute](#contribute)
-*   [License](#license)
+* [What is this?](#what-is-this)
+* [When should I use this?](#when-should-i-use-this)
+* [Install](#install)
+* [Use](#use)
+* [API](#api)
+  * [`findUp(test[, path][, callback])`](#finduptest-path-callback)
+  * [`findUpAll(test[, path][, callback])`](#findupalltest-path-callback)
+  * [`Assert`](#assert)
+  * [`Callback`](#callback)
+  * [`CallbackAll`](#callbackall)
+  * [`Result`](#result)
+  * [`Test`](#test)
+* [Types](#types)
+* [Compatibility](#compatibility)
+* [Contribute](#contribute)
+* [License](#license)
 
 ## What is this?
 
@@ -81,17 +81,17 @@ Find the first file or folder upwards.
 
 ###### Signatures
 
-*   `(test[, path], callback) => undefined`
-*   `(test[, path]) => Promise<VFile>`
+* `(test[, path], callback) => undefined`
+* `(test[, path]) => Promise<VFile>`
 
 ###### Parameters
 
-*   `test` ([`Test`][api-test])
-    — things to search for
-*   `path` (`URL` or `string`, default: `process.cwd()`)
-    — place to search from
-*   `callback` ([`Callback`][api-callback], optional)
-    — callback called when done
+* `test` ([`Test`][api-test])
+  — things to search for
+* `path` (`URL` or `string`, default: `process.cwd()`)
+  — place to search from
+* `callback` ([`Callback`][api-callback], optional)
+  — callback called when done
 
 ###### Returns
 
@@ -107,17 +107,17 @@ Find files or folders upwards.
 
 ###### Signatures
 
-*   `(test[, path], callback) => undefined`
-*   `(test[, path]) => Promise<Array<VFile>>`
+* `(test[, path], callback) => undefined`
+* `(test[, path]) => Promise<Array<VFile>>`
 
 ###### Parameters
 
-*   `test` ([`Test`][api-test])
-    — things to search for
-*   `paths` (`URL` or `string`, default: `process.cwd()`)
-    — place to search from
-*   `callback` ([`CallbackAll`][api-callback-all], optional)
-    — callback called when done
+* `test` ([`Test`][api-test])
+  — things to search for
+* `paths` (`URL` or `string`, default: `process.cwd()`)
+  — place to search from
+* `callback` ([`CallbackAll`][api-callback-all], optional)
+  — callback called when done
 
 ###### Returns
 
@@ -130,8 +130,8 @@ Handle a file (TypeScript type).
 
 ###### Parameters
 
-*   `file` ([`VFile`][vfile])
-    — file to handle
+* `file` ([`VFile`][vfile])
+  — file to handle
 
 ###### Returns
 
@@ -143,10 +143,10 @@ Callback called when done finding one file (TypeScript type).
 
 ###### Parameters
 
-*   `error` (`Error | undefined`)
-    — error; errors are currently never passed
-*   `file` ([`VFile | undefined`][vfile])
-    — file
+* `error` (`Error | undefined`)
+  — error; errors are currently never passed
+* `file` ([`VFile | undefined`][vfile])
+  — file
 
 ###### Returns
 
@@ -158,10 +158,10 @@ Callback called when done (TypeScript type).
 
 ###### Parameters
 
-*   `error` (`Error | undefined`)
-    — error; errors are currently never passed
-*   `files` ([`Array<VFile>`][vfile])
-    — files
+* `error` (`Error | undefined`)
+  — error; errors are currently never passed
+* `files` ([`Array<VFile>`][vfile])
+  — files
 
 ###### Returns
 
@@ -173,10 +173,10 @@ What to do when collecting a file or folder (TypeScript type).
 
 ###### Fields
 
-*   `break` (`boolean`, default: `false`)
-    — stop searching after this file or folder
-*   `include` (`boolean`, default: `false`)
-    — include this file or folder
+* `break` (`boolean`, default: `false`)
+  — stop searching after this file or folder
+* `include` (`boolean`, default: `false`)
+  — include this file or folder
 
 ### `Test`
 
